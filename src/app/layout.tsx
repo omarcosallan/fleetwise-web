@@ -1,10 +1,14 @@
 import { isAuthenticated } from '@/auth/auth'
+
 import './globals.css'
 
 import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import { redirect } from 'next/navigation'
-import { Toaster } from 'sonner'
+
+import { Toaster } from '@/components/ui/sonner'
+
+import { Providers } from './providers'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -23,9 +27,12 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={geist.variable} suppressHydrationWarning>
-      <body className="antialiased dark">
-        {children}
-        <Toaster theme="dark" />
+      <body className="antialiased">
+        <Providers>
+          {children}
+
+          <Toaster />
+        </Providers>
       </body>
     </html>
   )
