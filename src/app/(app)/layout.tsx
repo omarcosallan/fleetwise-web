@@ -14,12 +14,9 @@ export default function AppLayout({
 
   return (
     <div className="flex flex-col gap-6 min-h-screen py-10">
-      <div>
-        <Header />
-      </div>
-      <div className="flex flex-1 flex-col w-full max-w-[1200px] mx-auto space-y-5">
-        {children}
-      </div>
+      <Header />
+
+      {children}
     </div>
   )
 }
