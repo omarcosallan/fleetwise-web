@@ -87,7 +87,6 @@ export function OrganizationForm({
   } = form
 
   async function onSubmit(data: OrganizationSchema) {
-    console.log(data)
     const formAction = isUpdating
       ? updateOrganizationAction
       : createOrganizationAction
