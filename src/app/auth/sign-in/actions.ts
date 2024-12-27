@@ -1,14 +1,51 @@
 'use server'
 
 import { signInWithPassword } from '@/http/sign-in-with-password'
+import { HTTPError } from 'ky'
 
-export async function signInWithEmailAndPassword(data: FormData) {
-  const { email, password } = Object.fromEntries(data)
+import type { SignInSchema } from './sign-in-form'
+import { cookies } from 'next/headers'
 
-  const result = await signInWithPassword({
-    email: String(email),
-    password: String(password),
-  })
+export async function signInWithEmailAndPassword(data: SignInSchema) {
+  const { email, password } = data
 
-  console.log(result)
+  try {
+    const { token } = await signInWithPassword({
+      email,
+      password,
+    })
+
+    const allCoolies = await cookies()
+    allCoolies.set('fleet-wise-cookies-session-token', token, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    })
+  } catch (err) {
+    if (err instanceof HTTPError) {
+      if (err.response.status === 403) {
+        return {
+          success: false,
+          message: 'E-mail or password incorrect',
+          errors: null,
+        }
+      }
+      const { title } = (await err.response.json()) as {
+        title: string
+      }
+
+      return {
+        success: false,
+        message: title,
+        errors: null,
+      }
+    }
+
+    return {
+      success: false,
+      message: 'Unexpected error, try again in a few minutes.',
+      errors: null,
+    }
+  }
+
+  return { success: true, message: null, errors: null }
 }
