@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import { toast } from 'sonner'
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -45,7 +46,11 @@ export function SignInForm() {
   } = form
 
   async function onSubmit(data: SignInSchema) {
-    await signInWithEmailAndPassword(data)
+    const result = await signInWithEmailAndPassword(data)
+
+    if (!result.success) {
+      toast.error(result.message)
+    }
   }
 
   return (

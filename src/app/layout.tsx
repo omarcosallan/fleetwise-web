@@ -4,6 +4,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import { redirect } from 'next/navigation'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -22,7 +23,10 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={geist.variable} suppressHydrationWarning>
-      <body className="antialiased dark">{children}</body>
+      <body className="antialiased dark">
+        {children}
+        <Toaster theme="dark" />
+      </body>
     </html>
   )
 }
