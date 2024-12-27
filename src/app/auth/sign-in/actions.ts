@@ -16,7 +16,7 @@ export async function signInWithEmailAndPassword(data: SignInSchema) {
     })
 
     const allCoolies = await cookies()
-    allCoolies.set('fleet-wise-cookies-session-token', token, {
+    allCoolies.set(process.env.TOKEN_NAME!, token, {
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     })
