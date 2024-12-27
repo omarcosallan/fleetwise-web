@@ -6,6 +6,12 @@ interface GetOrganizationsResponse {
     name: string
     slug: string
     avatarUrl: string | null
+    createdAt: Date
+    role: string
+    owner: {
+      id: string
+      name: string
+    }
   }[]
 }
 
