@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -32,10 +33,12 @@ export const signInSchema = z.object({
 export type SignInSchema = z.infer<typeof signInSchema>
 
 export function SignInForm() {
+  const searchParams = useSearchParams()
+
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: '',
+      email: searchParams.get('email') ?? '',
       password: '',
     },
   })

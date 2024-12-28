@@ -1,6 +1,8 @@
 'use server'
 
+import { acceptInvite } from '@/http/accept-invite'
 import { signInWithPassword } from '@/http/sign-in-with-password'
+
 import { HTTPError } from 'ky'
 
 import type { SignInSchema } from './sign-in-form'
@@ -15,11 +17,20 @@ export async function signInWithEmailAndPassword(data: SignInSchema) {
       password,
     })
 
-    const allCoolies = await cookies()
-    allCoolies.set(process.env.TOKEN_NAME!, token, {
+    const allCookies = await cookies()
+    allCookies.set(process.env.TOKEN_NAME!, token, {
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     })
+
+    const inviteId = allCookies.get('inviteId')?.value
+
+    if (inviteId) {
+      try {
+        await acceptInvite(inviteId)
+        allCookies.delete('inviteId')
+      } catch {}
+    }
   } catch (err) {
     if (err instanceof HTTPError) {
       if (err.response.status === 403) {
