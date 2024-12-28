@@ -31,7 +31,7 @@ export async function Invites() {
       <div className="space-y-2">
         <h2 className="text-lg font-semibold">Invites</h2>
 
-        <div className="rounded border">
+        <div className="rounded-lg border">
           <Table>
             <TableBody>
               {invites.map((invite) => {

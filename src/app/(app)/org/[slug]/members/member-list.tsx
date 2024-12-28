@@ -29,7 +29,7 @@ export async function MemberList() {
     <div className="space-y-2">
       <h2 className="text-lg font-semibold">Members</h2>
 
-      <div className="rounded border">
+      <div className="rounded-lg border">
         <Table>
           <TableBody>
             {members.map((member) => {

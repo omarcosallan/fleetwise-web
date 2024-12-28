@@ -12,7 +12,7 @@ export function VehicleList() {
 
   return (
     <>
-      <div className="rounded-md border">
+      <div className="rounded-lg border">
         <Table>
           <TableHeader>
             <TableRow>
