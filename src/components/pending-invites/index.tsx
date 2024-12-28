@@ -18,7 +18,7 @@ export function PendingInvites() {
   const queryClient = useQueryClient()
   const [isOpen, setIsOpen] = useState(false)
 
-  const { data } = useQuery({
+  const { data: invites } = useQuery({
     queryKey: ['pending-invites'],
     queryFn: getPendingInvites,
     enabled: isOpen,
@@ -47,14 +47,14 @@ export function PendingInvites() {
 
       <PopoverContent className="w-80 space-y-2">
         <span className="block text-sm font-medium">
-          Pending Invites ({data?.invites.length ?? 0})
+          Pending Invites ({invites?.length ?? 0})
         </span>
 
-        {data?.invites.length === 0 && (
+        {invites?.length === 0 && (
           <p className="text-sm text-muted-foreground">No invites found.</p>
         )}
 
-        {data?.invites.map((invite) => {
+        {invites?.map((invite) => {
           return (
             <div key={invite.id} className="space-y-2">
               <p className="text-sm leading-relaxed text-muted-foreground">

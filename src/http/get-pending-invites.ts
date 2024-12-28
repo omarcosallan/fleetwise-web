@@ -3,26 +3,24 @@ import { Role } from '@/lib/casl'
 import { api } from './api-client'
 
 interface GetPendingInvitesResponse {
-  invites: {
-    organization: {
-      name: string
-    }
+  organization: {
+    name: string
+  }
+  id: string
+  role: Role
+  email: string
+  createdAt: string
+  author: {
     id: string
-    role: Role
-    email: string
-    createdAt: string
-    author: {
-      id: string
-      name: string | null
-      avatarUrl: string | null
-    } | null
-  }[]
+    name: string | null
+    avatarUrl: string | null
+  } | null
 }
 
 export async function getPendingInvites() {
   const result = await api
     .get('pending-invites')
-    .json<GetPendingInvitesResponse>()
+    .json<GetPendingInvitesResponse[]>()
 
   return result
 }

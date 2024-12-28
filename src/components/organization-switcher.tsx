@@ -18,7 +18,7 @@ import {
 export async function OrganizationSwitcher() {
   const currentOrg = (await cookies()).get('org')?.value
 
-  const { organizations } = await getOrganizations()
+  const organizations = await getOrganizations()
 
   const currentOrganization = organizations.find(
     (org) => org.slug === currentOrg,

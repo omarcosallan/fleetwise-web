@@ -11,7 +11,7 @@ export async function Invites() {
 
   const permissions = await ability()
 
-  const { invites } = await getInvites(currentOrg!)
+  const invites = await getInvites(currentOrg!)
 
   return (
     <div className="space-y-4">

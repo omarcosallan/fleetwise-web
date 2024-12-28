@@ -17,15 +17,13 @@ import {
 import { getVehicles } from '@/http/get-vehicles'
 
 import { getNameInitials } from '@/utils/get-name-initials'
-import { Button } from '@/components/ui/button'
-import { Copy } from 'lucide-react'
 
 dayjs.extend(relativeTime)
 
 export async function VehicleList() {
   const currentOrg = await getCurrentOrg()
 
-  const { vehicles } = await getVehicles(currentOrg!)
+  const vehicles = await getVehicles(currentOrg!)
 
   return (
     <>
@@ -39,7 +37,6 @@ export async function VehicleList() {
               <TableHead style={{ width: 80 }}>Status</TableHead>
               <TableHead style={{ width: 120 }}>Rented</TableHead>
               <TableHead style={{ width: 200 }}>Created at</TableHead>
-              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
 
@@ -90,15 +87,6 @@ export async function VehicleList() {
                       </Avatar>
 
                       {dayjs(vehicle.createdAt).fromNow()}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        className="ml-auto hidden lg:flex"
-                      >
-                        <Copy className="size-4" />
-                      </Button>
                     </TableCell>
                   </TableRow>
                 )

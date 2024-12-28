@@ -3,16 +3,14 @@ import { Role } from '@/lib/casl'
 import { api } from './api-client'
 
 interface GetInvitesResponse {
-  invites: {
+  id: string
+  role: Role
+  email: string
+  createdAt: string
+  author: {
     id: string
-    role: Role
-    email: string
-    createdAt: string
-    author: {
-      id: string
-      name: string | null
-    } | null
-  }[]
+    name: string | null
+  } | null
 }
 
 export async function getInvites(org: string) {
@@ -22,7 +20,7 @@ export async function getInvites(org: string) {
         tags: [`${org}/invites`],
       },
     })
-    .json<GetInvitesResponse>()
+    .json<GetInvitesResponse[]>()
 
   return result
 }

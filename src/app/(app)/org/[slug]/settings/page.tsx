@@ -21,7 +21,7 @@ export default async function Settings() {
   const canUpdateOrganization = permissions?.can('update', 'Organization')
   const canShutdownOrganization = permissions?.can('delete', 'Organization')
 
-  const { organization } = await getOrganization(currentOrg)
+  const organization = await getOrganization(currentOrg)
 
   return (
     <div className="space-y-4">

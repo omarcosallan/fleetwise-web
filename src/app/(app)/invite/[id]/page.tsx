@@ -23,7 +23,7 @@ interface InvitePageProps {
 export default async function InvitePage({ params }: InvitePageProps) {
   const inviteId = params.id
 
-  const { invite } = await getInvite(inviteId)
+  const invite = await getInvite(inviteId)
   const isUserAuthenticated = await isAuthenticated()
 
   let currentUserEmail = null
@@ -56,7 +56,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-4">
+    <div className="flex max-h-screen my-auto flex-col items-center justify-center px-4">
       <div className="flex w-full max-w-sm flex-col justify-center space-y-6">
         <div className="flex flex-col items-center space-y-4">
           <Avatar className="size-16">

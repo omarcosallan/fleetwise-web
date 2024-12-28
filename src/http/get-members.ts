@@ -3,14 +3,12 @@ import type { Role } from '@/lib/casl'
 import { api } from './api-client'
 
 interface GetMembersResponse {
-  members: {
-    id: string
-    userId: string
-    role: Role
-    name: string | null
-    email: string
-    avatarUrl: string | null
-  }[]
+  id: string
+  userId: string
+  role: Role
+  name: string | null
+  email: string
+  avatarUrl: string | null
 }
 
 export async function getMembers(org: string) {
@@ -20,7 +18,7 @@ export async function getMembers(org: string) {
         tags: [`${org}/members`],
       },
     })
-    .json<GetMembersResponse>()
+    .json<GetMembersResponse[]>()
 
   return result
 }

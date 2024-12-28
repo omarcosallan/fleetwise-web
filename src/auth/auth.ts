@@ -21,7 +21,7 @@ export async function getCurrentMembership() {
     return null
   }
 
-  const { membership } = await getMembership(org)
+  const membership = await getMembership(org)
 
   return membership
 }
@@ -35,7 +35,7 @@ export async function auth() {
   }
 
   try {
-    const { user } = await getProfile()
+    const user = await getProfile()
 
     return { user }
   } catch {}

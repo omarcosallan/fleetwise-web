@@ -19,7 +19,7 @@ import Link from 'next/link'
 dayjs.extend(relativeTime)
 
 export async function OrganizationList() {
-  const { organizations } = await getOrganizations()
+  const organizations = await getOrganizations()
 
   return (
     <>

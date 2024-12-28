@@ -20,7 +20,7 @@ export async function MemberList() {
   const currentOrg = await getCurrentOrg()
   const permissions = await ability()
 
-  const [{ membership }, { members }, { organization }] = await Promise.all([
+  const [membership, members, organization] = await Promise.all([
     getMembership(currentOrg!),
     getMembers(currentOrg!),
     getOrganization(currentOrg!),
@@ -32,7 +32,7 @@ export async function MemberList() {
     <div className="rounded-lg border">
       <Table>
         <TableBody>
-          {members.map((member) => {
+          {members?.map((member) => {
             return (
               <TableRow key={member.id}>
                 <TableCell className="p-6" style={{ width: 48 }}>
