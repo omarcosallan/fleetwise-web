@@ -10,8 +10,8 @@ export default async function MembersPage() {
       <h1 className="text-3xl font-bold">Members</h1>
 
       <div className="space-y-4">
-        {permissions?.can('get', 'Invite') && <Invites />}
         {permissions?.can('get', 'User') && <MemberList />}
+        {permissions?.can('get', 'Invite') && <Invites />}
       </div>
     </div>
   )
