@@ -14,7 +14,7 @@ export const api = ky.create({
           const cookieStore = await cookies()
           token = cookieStore.get(process.env.TOKEN_NAME!)?.value
         } else {
-          token = getCookie(process.env.TOKEN_NAME!)
+          token = getCookie('fleet-wise-cookies-session-token')
         }
 
         if (token != null && !(token === '')) {
