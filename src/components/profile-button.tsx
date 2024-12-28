@@ -1,4 +1,4 @@
-import { ChevronDown, LogOut } from 'lucide-react'
+import { ChevronDown, Cog, LogOut } from 'lucide-react'
 
 import { auth } from '@/auth/auth'
 
@@ -7,8 +7,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
+
+import Link from 'next/link'
 
 function getInitials(name: string): string {
   const initials = name
@@ -22,10 +26,6 @@ function getInitials(name: string): string {
 
 export async function ProfileButton() {
   const { user } = await auth()
-
-  async function handleSignOut() {
-    'use server'
-  }
 
   return (
     <DropdownMenu>
@@ -42,15 +42,23 @@ export async function ProfileButton() {
         </Avatar>
         <ChevronDown className="size-4 text-muted-foreground" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <form action={handleSignOut}>
-          <DropdownMenuItem className="flex items-center gap-2" asChild>
-            <button type="submit" className="w-full">
-              <LogOut className="mr-2 size-4" />
-              Sign out
-            </button>
-          </DropdownMenuItem>
-        </form>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuItem className="flex items-center gap-2" asChild>
+          <Link href="/settings/profile" className="w-full">
+            <Cog className="size-4" />
+            Settings
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem asChild>
+          <Link href="/api/auth/sign-out">
+            <LogOut className="mr-2 size-4" />
+            Sign Out
+          </Link>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
