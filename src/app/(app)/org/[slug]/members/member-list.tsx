@@ -2,7 +2,7 @@ import { organizationSchema } from '@/lib/casl'
 import { ArrowLeftRight, Crown, UserMinus } from 'lucide-react'
 import Image from 'next/image'
 
-import { ability, getCurrentOrg } from '@/auth/auth'
+import { ability, auth, getCurrentOrg } from '@/auth/auth'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
@@ -10,10 +10,11 @@ import { getMembers } from '@/http/get-members'
 import { getMembership } from '@/http/get-membership'
 import { getOrganization } from '@/http/get-organization'
 
-import { removeMemberAction } from './actions'
+import { removeMemberAction, transferOrganizationAction } from './actions'
 import { UpdateMemberRoleSelect } from './update-member-role-select'
 
 export async function MemberList() {
+  const { user } = await auth()
   const currentOrg = await getCurrentOrg()
   const permissions = await ability()
 
@@ -71,12 +72,20 @@ export async function MemberList() {
                       {permissions?.can(
                         'transfer_ownership',
                         authOrganization,
-                      ) && (
-                        <Button size="sm" variant="ghost">
-                          <ArrowLeftRight className="mr-2 size-4" />
-                          Transfer ownership
-                        </Button>
-                      )}
+                      ) &&
+                        user.id !== member.userId && (
+                          <form
+                            action={transferOrganizationAction.bind(
+                              null,
+                              member.userId,
+                            )}
+                          >
+                            <Button size="sm" variant="ghost" type="submit">
+                              <ArrowLeftRight className="mr-2 size-4" />
+                              Transfer ownership
+                            </Button>
+                          </form>
+                        )}
 
                       <UpdateMemberRoleSelect
                         memberId={member.id}

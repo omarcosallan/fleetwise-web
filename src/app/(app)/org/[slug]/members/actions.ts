@@ -8,6 +8,7 @@ import { getCurrentOrg } from '@/auth/auth'
 import { removeMember } from '@/http/remove-member'
 import { revokeInvite } from '@/http/revoke-invite'
 import { updateMember } from '@/http/update-member'
+import { transferOrganization } from '@/http/transfer-organization'
 
 import { InviteSchema } from './create-invite-form'
 import { HTTPError } from 'ky'
@@ -45,6 +46,17 @@ export async function createInviteAction(data: InviteSchema) {
     message: 'Successfully created the invite.',
     errors: null,
   }
+}
+
+export async function transferOrganizationAction(memberId: string) {
+  const currentOrg = await getCurrentOrg()
+
+  await transferOrganization({
+    org: currentOrg ?? '',
+    memberId,
+  })
+
+  revalidateTag(`${currentOrg}/members`)
 }
 
 export async function removeMemberAction(memberId: string) {
