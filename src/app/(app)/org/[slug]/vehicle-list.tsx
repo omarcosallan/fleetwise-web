@@ -1,3 +1,10 @@
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+
+import { getCurrentOrg } from '@/auth/auth'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import {
   Table,
   TableBody,
@@ -7,8 +14,18 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-export function VehicleList() {
-  const vehicles = []
+import { getVehicles } from '@/http/get-vehicles'
+
+import { getNameInitials } from '@/utils/get-name-initials'
+import { Button } from '@/components/ui/button'
+import { Copy } from 'lucide-react'
+
+dayjs.extend(relativeTime)
+
+export async function VehicleList() {
+  const currentOrg = await getCurrentOrg()
+
+  const { vehicles } = await getVehicles(currentOrg!)
 
   return (
     <>
@@ -16,84 +33,76 @@ export function VehicleList() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Marca/Modelo</TableHead>
-              <TableHead className="max-w-min">Placa</TableHead>
-              <TableHead>Renavam</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Locado</TableHead>
-              <TableHead style={{ width: 200 }}>Secretaria</TableHead>
-              <TableHead>Criado há</TableHead>
+              <TableHead>Brand/Manufacturer</TableHead>
+              <TableHead style={{ width: 100 }}>Plate</TableHead>
+              <TableHead style={{ width: 120 }}>Register</TableHead>
+              <TableHead style={{ width: 80 }}>Status</TableHead>
+              <TableHead style={{ width: 120 }}>Rented</TableHead>
+              <TableHead style={{ width: 200 }}>Created at</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
             {vehicles && vehicles.length ? (
-              <TableRow>
-                <TableCell className="text-muted-foreground">
-                  <div>
-                    <span className="font-medium">
-                      {vehicle.manufacturer}/{vehicle.model}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell className="text-zinc-300">{vehicle.plate}</TableCell>
-                <TableCell className="text-zinc-300">
-                  {vehicle.renavam}
-                </TableCell>
-                <TableCell>
-                  {vehicle.active ? (
-                    <Badge>Ativo</Badge>
-                  ) : (
-                    <Badge variant="secondary">Inativo</Badge>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {vehicle.rented ? (
-                    <Badge>Locado</Badge>
-                  ) : (
-                    <Badge variant="secondary">Não locado</Badge>
-                  )}
-                </TableCell>
-                <TableCell
-                  className="truncate max-w-16"
-                  title={vehicle.department.name}
-                >
-                  {vehicle.department.name}
-                </TableCell>
-                <TableCell
-                  title={`Criado por ${vehicle.createdBy.name}`}
-                  className="flex items-center gap-2"
-                >
-                  <Avatar>
-                    <AvatarFallback>
-                      {getNameInitials(vehicle.createdBy.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  {formatDistanceToNow(vehicle.createdAt, {
-                    locale: ptBR,
-                    addSuffix: true,
-                  })}
-                </TableCell>
-                <TableCell>
-                  {permissions?.can('update', 'Vehicle') && (
-                    <UpdateVehicle
-                      vehicle={{
-                        id: vehicle.id,
-                        model: vehicle.model,
-                        manufacturer: vehicle.manufacturer,
-                        manufacturingYear: String(vehicle.manufacturingYear),
-                        plate: vehicle.plate,
-                        registration: vehicle.renavam,
-                        rented: vehicle.rented,
-                        active: vehicle.active,
-                        vehicleType: vehicle.vehicleType,
-                        departmentId: vehicle.department.id,
-                      }}
-                    />
-                  )}
-                </TableCell>
-              </TableRow>
+              vehicles.map((vehicle) => {
+                return (
+                  <TableRow
+                    key={vehicle.id}
+                    className="p-6 has-[a:focus-visible]:bg-muted"
+                  >
+                    <TableCell className="text-muted-foreground">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-primary outline-none">
+                          {vehicle.manufacturer}/{vehicle.model}
+                        </span>
+
+                        <span className="text-xs text-muted-foreground">
+                          {vehicle.id}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>{vehicle.plate}</TableCell>
+                    <TableCell>{vehicle.register}</TableCell>
+                    <TableCell>
+                      {vehicle.active ? (
+                        <Badge>Active</Badge>
+                      ) : (
+                        <Badge variant="secondary">Inactive</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {vehicle.rented ? (
+                        <Badge>Rented</Badge>
+                      ) : (
+                        <Badge variant="secondary">Not rented</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell
+                      title={`Criado por ${vehicle.manufacturer}`}
+                      className="flex items-center gap-2"
+                    >
+                      <Avatar>
+                        <AvatarFallback>
+                          {getNameInitials(vehicle.author.name)}
+                        </AvatarFallback>
+                        <AvatarImage src={vehicle.author.avatarUrl} />
+                      </Avatar>
+
+                      {dayjs(vehicle.createdAt).fromNow()}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="ml-auto hidden lg:flex"
+                      >
+                        <Copy className="size-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                )
+              })
             ) : (
               <TableRow>
                 <TableCell colSpan={99} className="h-24 text-center">

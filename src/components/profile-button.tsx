@@ -14,15 +14,7 @@ import {
 
 import Link from 'next/link'
 
-function getInitials(name: string): string {
-  const initials = name
-    .split(' ')
-    .map((word) => word.charAt(0).toUpperCase())
-    .slice(0, 2)
-    .join('')
-
-  return initials
-}
+import { getNameInitials } from '@/utils/get-name-initials'
 
 export async function ProfileButton() {
   const { user } = await auth()
@@ -37,7 +29,7 @@ export async function ProfileButton() {
         <Avatar>
           {user.avatarUrl && <AvatarImage src={user.avatarUrl} />}
           {user.name && (
-            <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+            <AvatarFallback>{getNameInitials(user.name)}</AvatarFallback>
           )}
         </Avatar>
         <ChevronDown className="size-4 text-muted-foreground" />
