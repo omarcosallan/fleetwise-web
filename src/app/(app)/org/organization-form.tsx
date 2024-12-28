@@ -125,7 +125,7 @@ export function OrganizationForm({
             name="domain"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Organization name</FormLabel>
+                <FormLabel>E-mail domain</FormLabel>
                 <FormControl>
                   <Input {...field} value={field.value ?? ''} />
                 </FormControl>

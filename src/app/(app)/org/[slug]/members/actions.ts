@@ -3,10 +3,49 @@
 import { Role } from '@/lib/casl'
 import { revalidateTag } from 'next/cache'
 
+import { createInvite } from '@/http/create-invite'
 import { getCurrentOrg } from '@/auth/auth'
 import { removeMember } from '@/http/remove-member'
 import { revokeInvite } from '@/http/revoke-invite'
 import { updateMember } from '@/http/update-member'
+
+import { InviteSchema } from './create-invite-form'
+import { HTTPError } from 'ky'
+
+export async function createInviteAction(data: InviteSchema) {
+  const currentOrg = await getCurrentOrg()
+
+  const { email, role } = data
+
+  try {
+    await createInvite({
+      org: currentOrg!,
+      email,
+      role,
+    })
+
+    revalidateTag(`${currentOrg}/invites`)
+  } catch (err) {
+    if (err instanceof HTTPError) {
+      const { title } = await err.response.json()
+      return { success: false, message: title, errors: null }
+    }
+
+    console.error(err)
+
+    return {
+      success: false,
+      message: 'Unexpected error, try again in a few minutes.',
+      errors: null,
+    }
+  }
+
+  return {
+    success: true,
+    message: 'Successfully created the invite.',
+    errors: null,
+  }
+}
 
 export async function removeMemberAction(memberId: string) {
   const currentOrg = await getCurrentOrg()
