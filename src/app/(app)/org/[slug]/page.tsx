@@ -1,4 +1,10 @@
+import { Metadata } from 'next'
+
 import { VehicleList } from './vehicle-list'
+
+export const metadata: Metadata = {
+  title: 'Vehicles',
+}
 
 export default function OrgPage() {
   return (

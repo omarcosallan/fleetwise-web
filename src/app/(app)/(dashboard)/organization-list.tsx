@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
+import Link from 'next/link'
+
 dayjs.extend(relativeTime)
 
 export async function OrganizationList() {
@@ -32,8 +34,8 @@ export async function OrganizationList() {
             </CardHeader>
             <CardFooter className="flex items-center gap-1.5">
               <Avatar className="size-4">
-                {organization.avatarUrl && (
-                  <AvatarImage src={organization.avatarUrl} />
+                {organization.owner.avatarUrl && (
+                  <AvatarImage src={organization.owner.avatarUrl} />
                 )}
                 <AvatarFallback />
               </Avatar>
@@ -45,9 +47,11 @@ export async function OrganizationList() {
                 {dayjs(organization.createdAt).fromNow()}
               </span>
 
-              <Button size="xs" variant="outline" className="ml-auto">
-                View <ArrowRight className="ml-2 size-3" />
-              </Button>
+              <Link href={`/org/${organization.slug}`} className="ml-auto">
+                <Button size="xs" variant="outline">
+                  View <ArrowRight className="ml-2 size-3" />
+                </Button>
+              </Link>
             </CardFooter>
           </Card>
         )

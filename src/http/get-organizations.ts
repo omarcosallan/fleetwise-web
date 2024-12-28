@@ -11,6 +11,7 @@ interface GetOrganizationsResponse {
     owner: {
       id: string
       name: string
+      avatarUrl: string
     }
   }[]
 }
