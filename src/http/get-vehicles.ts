@@ -19,7 +19,11 @@ interface GetVehicleResponse {
 
 export async function getVehicles(org: string) {
   const result = await api
-    .get(`organizations/${org}/vehicles`)
+    .get(`organizations/${org}/vehicles`, {
+      next: {
+        tags: [`${org}vehicles`],
+      },
+    })
     .json<GetVehicleResponse[]>()
 
   return result

@@ -11,14 +11,17 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { toast } from 'sonner'
 
 import { validateVehicleRegistration } from '@/utils/validate-vehicle-register'
 
+import { Check, Loader2 } from 'lucide-react'
+
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DialogClose } from '@radix-ui/react-dialog'
-import { Check, Loader2, X } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+
+import { createVehicleAction } from './[slug]/actions'
 
 export const vehicleSchema = z
   .object({
@@ -84,7 +87,7 @@ interface VehicleFormProps {
 }
 
 export function VehicleForm({
-  isUpdating = false,
+  // isUpdating = false,
   initialData,
 }: VehicleFormProps) {
   const form = useForm<VehicleSchema>({
@@ -93,7 +96,7 @@ export function VehicleForm({
       active: true,
       rented: false,
       manufacturer: '',
-      manufacturingYear: 0,
+      manufacturingYear: 1999,
       model: '',
       plate: '',
       register: '',
@@ -105,29 +108,38 @@ export function VehicleForm({
     formState: { isSubmitting },
   } = form
 
-  async function onSubmit() {}
+  async function onSubmit(data: VehicleSchema) {
+    // const formAction = isUpdating ? updateVehicleAction : createVehicleAction
+
+    const result = await createVehicleAction(data)
+
+    if (result.success) {
+      toast.success(result.message)
+    } else {
+      toast.error(result.message)
+    }
+
+    console.log(result)
+  }
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex-1 flex flex-col justify-between"
-      >
-        <div className="flex flex-col gap-6">
-          <FormField
-            control={form.control}
-            name="model"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Model</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="model"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Model</FormLabel>
+              <FormControl>
+                <Input placeholder="Camry" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
+        <div className="flex gap-6">
           <FormField
             control={form.control}
             name="manufacturer"
@@ -135,49 +147,19 @@ export function VehicleForm({
               <FormItem>
                 <FormLabel>Manufacturer</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input placeholder="Toyota" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <div className="flex gap-6">
-            <FormField
-              control={form.control}
-              name="plate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Plate</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="register"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Register</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
           <FormField
             control={form.control}
             name="manufacturingYear"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Manufacturing year</FormLabel>
+              <FormItem className="flex-1">
+                <FormLabel>Year</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} />
                 </FormControl>
@@ -185,66 +167,87 @@ export function VehicleForm({
               </FormItem>
             )}
           />
-
-          <div className="flex gap-6">
-            <FormField
-              control={form.control}
-              name="active"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex items-end space-x-2">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <FormLabel>Active</FormLabel>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="rented"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex items-end space-x-2">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-
-                    <FormLabel>Rented</FormLabel>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <DialogClose asChild data-dialog-close>
-            <Button variant="ghost" size="sm">
-              <X className="mr-2 size-3" />
-              Cancel
-            </Button>
-          </DialogClose>
-
-          <Button type="submit" size="sm" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <Loader2 className="mr-2 size-3 animate-spin" />
-            ) : (
-              <Check className="mr-2 size-3" />
+        <div className="flex gap-6">
+          <FormField
+            control={form.control}
+            name="plate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Plate</FormLabel>
+                <FormControl>
+                  <Input placeholder="XYZ1234" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
             )}
-            Save vehicle
-          </Button>
+          />
+
+          <FormField
+            control={form.control}
+            name="register"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Register</FormLabel>
+                <FormControl>
+                  <Input placeholder="00123456789" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
+
+        <div className="flex gap-6">
+          <FormField
+            control={form.control}
+            name="active"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-end space-x-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel>Active</FormLabel>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="rented"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex items-end space-x-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+
+                  <FormLabel>Rented</FormLabel>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <Button type="submit" className="w-full" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <Loader2 className="mr-2 size-3 animate-spin" />
+          ) : (
+            <Check className="mr-2 size-3" />
+          )}
+          Save vehicle
+        </Button>
       </form>
     </Form>
   )

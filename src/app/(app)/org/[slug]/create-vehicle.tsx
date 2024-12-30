@@ -21,11 +21,11 @@ export function CreateVehicle() {
           Create new
         </Button>
       </SheetTrigger>
-      <SheetContent className="flex flex-col gap-6 h-full">
-        <SheetHeader className="py-4">
+      <SheetContent className="space-y-4">
+        <SheetHeader>
           <SheetTitle>Create vehicle</SheetTitle>
           <SheetDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
+            Add vehicles to your organization here. Click save when finished.
           </SheetDescription>
         </SheetHeader>
 
