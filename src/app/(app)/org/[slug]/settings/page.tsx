@@ -1,3 +1,5 @@
+import { Metadata } from 'next'
+
 import { ability, getCurrentOrg } from '@/auth/auth'
 
 import {
@@ -13,20 +15,22 @@ import { getOrganization } from '@/http/get-organization'
 import { OrganizationForm } from '../../organization-form'
 import { ShutdownOrganizationButton } from './shutdown-organization-button'
 
+export const metadata: Metadata = {
+  title: 'Settings & Billing',
+}
+
 export default async function Settings() {
   const currentOrg = await getCurrentOrg()
-  if (!currentOrg) return
+
   const permissions = await ability()
 
   const canUpdateOrganization = permissions?.can('update', 'Organization')
   const canShutdownOrganization = permissions?.can('delete', 'Organization')
 
-  const organization = await getOrganization(currentOrg)
+  const organization = await getOrganization(currentOrg!)
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-
+    <>
       <div className="space-y-4">
         {canUpdateOrganization && (
           <Card>
@@ -65,6 +69,6 @@ export default async function Settings() {
           </Card>
         )}
       </div>
-    </div>
+    </>
   )
 }
