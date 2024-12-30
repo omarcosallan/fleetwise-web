@@ -76,7 +76,7 @@ export async function VehicleList() {
                       )}
                     </TableCell>
                     <TableCell
-                      title={`Criado por ${vehicle.manufacturer}`}
+                      title={`Criado por ${vehicle.author.name}`}
                       className="flex items-center gap-2"
                     >
                       <Avatar>
