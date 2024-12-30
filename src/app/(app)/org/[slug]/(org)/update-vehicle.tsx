@@ -1,4 +1,4 @@
-import { VehicleForm, VehicleSchema } from '../vehicle-form'
+import { VehicleForm, VehicleSchema } from './vehicle-form'
 
 import {
   Sheet,

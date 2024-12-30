@@ -1,7 +1,7 @@
 'use server'
 
 import { revalidateTag } from 'next/cache'
-import { VehicleSchema } from '../vehicle-form'
+import { VehicleSchema } from './vehicle-form'
 import { HTTPError } from 'ky'
 
 import { getCurrentOrg } from '@/auth/auth'

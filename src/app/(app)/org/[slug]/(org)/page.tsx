@@ -1,3 +1,5 @@
+import { Metadata } from 'next'
+
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
@@ -21,7 +23,11 @@ import { UpdateVehicle } from './update-vehicle'
 
 dayjs.extend(relativeTime)
 
-export async function VehicleList() {
+export const metadata: Metadata = {
+  title: 'Vehicles',
+}
+
+export default async function OrgPage() {
   const currentOrg = await getCurrentOrg()
 
   const vehicles = await getVehicles(currentOrg!)
@@ -40,7 +46,7 @@ export async function VehicleList() {
               <TableHead style={{ width: 80 }}>Status</TableHead>
               <TableHead style={{ width: 120 }}>Rented</TableHead>
               <TableHead style={{ width: 200 }}>Created at</TableHead>
-              <TableHead style={{ width: 60 }}></TableHead>
+              <TableHead style={{ width: 64 }} />
             </TableRow>
           </TableHeader>
 
@@ -54,7 +60,6 @@ export async function VehicleList() {
                         <span className="font-medium text-primary outline-none">
                           {vehicle.manufacturer}/{vehicle.model}
                         </span>
-
                         <span className="text-xs text-muted-foreground">
                           {vehicle.id}
                         </span>

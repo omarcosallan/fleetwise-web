@@ -20,8 +20,7 @@ import { Check, Loader2 } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-
-import { createVehicleAction, updateVehicleAction } from './[slug]/actions'
+import { createVehicleAction, updateVehicleAction } from './actions'
 
 export const vehicleSchema = z
   .object({
