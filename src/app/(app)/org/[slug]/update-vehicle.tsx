@@ -16,7 +16,7 @@ export function UpdateVehicle({ initialData }: { initialData: VehicleSchema }) {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="gap-2" size="icon" variant="outline">
+        <Button variant="ghost" size="icon">
           <Ellipsis />
         </Button>
       </SheetTrigger>

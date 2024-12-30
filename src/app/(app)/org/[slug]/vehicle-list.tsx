@@ -30,7 +30,7 @@ export async function VehicleList() {
 
   return (
     <>
-      <div className="rounded-lg border">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -48,11 +48,8 @@ export async function VehicleList() {
             {vehicles && vehicles.length ? (
               vehicles.map((vehicle) => {
                 return (
-                  <TableRow
-                    key={vehicle.id}
-                    className="p-6 has-[a:focus-visible]:bg-muted"
-                  >
-                    <TableCell className="text-muted-foreground">
+                  <TableRow key={vehicle.id}>
+                    <TableCell>
                       <div className="flex flex-col">
                         <span className="font-medium text-primary outline-none">
                           {vehicle.manufacturer}/{vehicle.model}

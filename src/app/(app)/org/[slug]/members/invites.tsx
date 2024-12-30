@@ -29,21 +29,19 @@ export async function Invites() {
       <div className="space-y-2">
         <h2 className="text-lg font-semibold">Invites</h2>
 
-        <div className="rounded-lg border">
+        <div className="rounded-xl border bg-card text-card-foreground shadow">
           <Table>
             <TableBody>
               {invites.map((invite) => {
                 return (
                   <TableRow key={invite.id}>
-                    <TableCell className="py-2.5">
+                    <TableCell>
                       <span className="text-muted-foreground">
                         {invite.email}
                       </span>
                     </TableCell>
-                    <TableCell className="py-2.5 font-medium">
-                      {invite.role}
-                    </TableCell>
-                    <TableCell className="py-2.5">
+                    <TableCell className="font-medium">{invite.role}</TableCell>
+                    <TableCell>
                       <div className="flex justify-end">
                         {permissions?.can('delete', 'Invite') && (
                           <RevokeInviteButton inviteId={invite.id} />

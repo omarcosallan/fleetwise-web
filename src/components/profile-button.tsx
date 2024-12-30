@@ -1,4 +1,4 @@
-import { ChevronDown, Cog, LogOut } from 'lucide-react'
+import { ChevronDown, LogOut } from 'lucide-react'
 
 import { auth } from '@/auth/auth'
 
@@ -35,11 +35,20 @@ export async function ProfileButton() {
         <ChevronDown className="size-4 text-muted-foreground" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">{user.name}</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {user.email}
+            </p>
+          </div>
+        </DropdownMenuLabel>
+
+        <DropdownMenuSeparator />
+
         <DropdownMenuItem className="flex items-center gap-2" asChild>
           <Link href="/settings/profile" className="w-full">
-            <Cog className="size-4" />
-            Settings
+            Profile
           </Link>
         </DropdownMenuItem>
 
@@ -48,7 +57,7 @@ export async function ProfileButton() {
         <DropdownMenuItem asChild>
           <Link href="/api/auth/sign-out">
             <LogOut className="mr-2 size-4" />
-            Sign Out
+            Log out
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>

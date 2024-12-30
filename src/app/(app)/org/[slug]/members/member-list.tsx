@@ -1,10 +1,9 @@
 import { organizationSchema } from '@/lib/casl'
 import { ArrowLeftRight, Crown, UserMinus } from 'lucide-react'
-import Image from 'next/image'
 
 import { ability, auth, getCurrentOrg } from '@/auth/auth'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 
@@ -14,6 +13,7 @@ import { getOrganization } from '@/http/get-organization'
 
 import { removeMemberAction, transferOrganizationAction } from './actions'
 import { UpdateMemberRoleSelect } from './update-member-role-select'
+import { getNameInitials } from '@/utils/get-name-initials'
 
 export async function MemberList() {
   const { user } = await auth()
@@ -35,23 +35,17 @@ export async function MemberList() {
           {members?.map((member) => {
             return (
               <TableRow key={member.id}>
-                <TableCell className="p-6" style={{ width: 48 }}>
-                  <Avatar>
-                    <AvatarFallback />
-                    {member.avatarUrl && (
-                      <Image
-                        src={member.avatarUrl}
-                        width={32}
-                        height={32}
-                        alt=""
-                        className="aspect-square size-full"
-                      />
-                    )}
+                <TableCell style={{ width: 48 }}>
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src={member.avatarUrl!} alt="Avatar" />
+                    <AvatarFallback>
+                      {getNameInitials(member.name!)}
+                    </AvatarFallback>
                   </Avatar>
                 </TableCell>
                 <TableCell className="py-2.5">
-                  <div className="flex flex-col">
-                    <span className="inline-flex items-center gap-2 font-medium">
+                  <div className="flex flex-col ml-4 space-y-1">
+                    <p className="text-sm font-medium leading-none">
                       {member.name}
                       {member.userId === membership.userId && ' (me)'}
                       {organization.ownerId === member.userId && (
@@ -60,10 +54,10 @@ export async function MemberList() {
                           Owner
                         </span>
                       )}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
+                    </p>
+                    <p className="text-xs text-muted-foreground">
                       {member.email}
-                    </span>
+                    </p>
                   </div>
                 </TableCell>
                 <TableCell className="py-2.5">
