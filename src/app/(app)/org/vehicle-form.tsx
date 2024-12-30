@@ -21,7 +21,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import { createVehicleAction } from './[slug]/actions'
+import { createVehicleAction, updateVehicleAction } from './[slug]/actions'
 
 export const vehicleSchema = z
   .object({
@@ -87,7 +87,7 @@ interface VehicleFormProps {
 }
 
 export function VehicleForm({
-  // isUpdating = false,
+  isUpdating = false,
   initialData,
 }: VehicleFormProps) {
   const form = useForm<VehicleSchema>({
@@ -109,17 +109,15 @@ export function VehicleForm({
   } = form
 
   async function onSubmit(data: VehicleSchema) {
-    // const formAction = isUpdating ? updateVehicleAction : createVehicleAction
+    const formAction = isUpdating ? updateVehicleAction : createVehicleAction
 
-    const result = await createVehicleAction(data)
+    const result = await formAction(data)
 
     if (result.success) {
       toast.success(result.message)
     } else {
       toast.error(result.message)
     }
-
-    console.log(result)
   }
 
   return (
@@ -177,7 +175,11 @@ export function VehicleForm({
               <FormItem>
                 <FormLabel>Plate</FormLabel>
                 <FormControl>
-                  <Input placeholder="XYZ1234" {...field} />
+                  <Input
+                    placeholder="XYZ1234"
+                    disabled={isUpdating}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -191,7 +193,11 @@ export function VehicleForm({
               <FormItem>
                 <FormLabel>Register</FormLabel>
                 <FormControl>
-                  <Input placeholder="00123456789" {...field} />
+                  <Input
+                    placeholder="00123456789"
+                    disabled={isUpdating}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
