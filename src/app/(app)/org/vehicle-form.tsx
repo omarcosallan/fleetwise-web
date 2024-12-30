@@ -26,19 +26,17 @@ import { createVehicleAction, updateVehicleAction } from './[slug]/actions'
 export const vehicleSchema = z
   .object({
     model: z
-      .string({ required_error: 'The vehicle model is required.' })
-      .min(3, { message: 'The model must contain at least 3 characters.' }),
+      .string()
+      .min(3, { message: 'Please, incluide at least least 3 characters.' }),
     manufacturer: z
       .string({ required_error: 'The vehicle manufacturer is required.' })
-      .min(3, {
-        message: 'The manufacturer must contain at least 3 characters.',
-      }),
+      .min(3, { message: 'Please, incluide at least least 3 characters.' }),
     manufacturingYear: z.coerce
       .number()
       .min(2000, { message: 'The manufacturing year must be 2000 or later.' }),
     plate: z
       .string({ required_error: 'The vehicle plate is required.' })
-      .length(7, { message: 'The plate must have exactly 7 characters.' })
+      .min(7, { message: 'Please, incluide at least least 7 characters.' })
       .regex(/^[a-zA-Z]{3}[0-9][A-Za-z0-9][0-9]{2}$/, {
         message:
           'The plate format is invalid. It should follow the pattern: ABC1D23.',
@@ -49,9 +47,7 @@ export const vehicleSchema = z
         required_error:
           'The vehicle registration number (Renavam) is required.',
       })
-      .min(9, {
-        message: 'The registration number must have at least 9 characters.',
-      })
+      .min(9, { message: 'Please, incluide at least least 9 characters.' })
       .max(11, {
         message: 'The registration number can have a maximum of 11 characters.',
       })
