@@ -1,7 +1,6 @@
 import { ability, getCurrentOrg } from '@/auth/auth'
 
 import { NavLink } from './nav-link'
-import { Button } from './ui/button'
 
 export async function Tabs() {
   const currentOrg = await getCurrentOrg()
@@ -15,43 +14,26 @@ export async function Tabs() {
   const canGetVehicles = permissions?.can('get', 'Vehicle')
 
   return (
-    <div className="border-b py-4">
-      <nav className="mx-auto flex max-w-[1200px] items-center gap-2">
-        {canGetVehicles && (
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="border border-transparent text-muted-foreground data-[current=true]:border-border data-[current=true]:text-foreground"
-          >
-            <NavLink href={`/org/${currentOrg}`}>Vehicles</NavLink>
-          </Button>
-        )}
+    <div className="border-grid border-b">
+      <div className="container-wrapper mx-auto max-w-[1200px] ">
+        <div className="container py-4">
+          <nav className="flex items-center gap-2">
+            {canGetVehicles && (
+              <NavLink href={`/org/${currentOrg}`}>Vehicles</NavLink>
+            )}
 
-        {canGetMembers && (
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="border border-transparent text-muted-foreground data-[current=true]:border-border data-[current=true]:text-foreground"
-          >
-            <NavLink href={`/org/${currentOrg}/members`}>Members</NavLink>
-          </Button>
-        )}
+            {canGetMembers && (
+              <NavLink href={`/org/${currentOrg}/members`}>Members</NavLink>
+            )}
 
-        {(canUpdateOrganization || canGetBilling) && (
-          <Button
-            asChild
-            variant="ghost"
-            size="sm"
-            className="border border-transparent text-muted-foreground data-[current=true]:border-border data-[current=true]:text-foreground"
-          >
-            <NavLink href={`/org/${currentOrg}/settings`}>
-              Settings & Billing
-            </NavLink>
-          </Button>
-        )}
-      </nav>
+            {(canUpdateOrganization || canGetBilling) && (
+              <NavLink href={`/org/${currentOrg}/settings`}>
+                Settings & Billing
+              </NavLink>
+            )}
+          </nav>
+        </div>
+      </div>
     </div>
   )
 }
