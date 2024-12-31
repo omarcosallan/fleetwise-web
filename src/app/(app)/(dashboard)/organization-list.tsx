@@ -25,7 +25,10 @@ export async function OrganizationList() {
     <>
       {organizations?.map((organization) => {
         return (
-          <Card key={organization.id} className="flex flex-col justify-between">
+          <Card
+            key={organization.id}
+            className="flex flex-col justify-between h-min"
+          >
             <CardHeader>
               <CardTitle>{organization.name}</CardTitle>
               <CardDescription className="line-clamp-2 leading-relaxed">
