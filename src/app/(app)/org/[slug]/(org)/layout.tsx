@@ -1,6 +1,9 @@
 import { ability } from '@/auth/auth'
 
 import { CreateVehicle } from './create-vehicle'
+import { VehiclesFilters } from './vehicles-filters'
+
+import { Suspense } from 'react'
 
 export default async function Layout({
   children,
@@ -18,6 +21,10 @@ export default async function Layout({
       </div>
 
       <main className="flex flex-1 flex-col w-full max-w-[1200px] mx-auto space-y-5">
+        <Suspense fallback={null}>
+          <VehiclesFilters />
+        </Suspense>
+
         {children}
       </main>
     </>

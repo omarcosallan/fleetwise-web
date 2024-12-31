@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
 
+import { Suspense } from 'react'
+
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
@@ -20,6 +22,9 @@ import { getVehicles } from '@/http/get-vehicles'
 
 import { getNameInitials } from '@/utils/get-name-initials'
 import { UpdateVehicle } from './update-vehicle'
+import { VehiclesPagination } from './vehicles-pagination'
+
+import { z } from 'zod'
 
 dayjs.extend(relativeTime)
 
@@ -27,10 +32,30 @@ export const metadata: Metadata = {
   title: 'Vehicles',
 }
 
-export default async function OrgPage() {
-  const currentOrg = await getCurrentOrg()
+const vehiclesPageSearchParams = z.object({
+  pageIndex: z.coerce.number().default(0),
+  pageSize: z.coerce.number().default(10),
+  search: z.string().optional(),
+})
 
-  const vehicles = await getVehicles(currentOrg!)
+type VehiclesPageSearchParams = z.infer<typeof vehiclesPageSearchParams>
+
+export default async function OrgPage({
+  searchParams,
+}: {
+  searchParams: Promise<VehiclesPageSearchParams>
+}) {
+  const { pageIndex, pageSize, search } = vehiclesPageSearchParams.parse(
+    await searchParams,
+  )
+
+  const currentOrg = await getCurrentOrg()
+  const { vehicles, pageCount } = await getVehicles({
+    org: currentOrg!,
+    pageSize,
+    pageIndex,
+    search,
+  })
 
   const permissions = await ability()
 
@@ -112,6 +137,14 @@ export default async function OrgPage() {
           </TableBody>
         </Table>
       </div>
+
+      <Suspense fallback={null}>
+        <VehiclesPagination
+          pageSize={pageSize}
+          pageIndex={pageIndex}
+          pageCount={pageCount}
+        />
+      </Suspense>
     </>
   )
 }
