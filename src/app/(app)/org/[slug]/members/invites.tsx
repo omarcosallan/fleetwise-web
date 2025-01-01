@@ -1,6 +1,5 @@
 import { ability, getCurrentOrg } from '@/auth/auth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table'
 import { getInvites } from '@/http/get-invites'
 
 import { RevokeInviteButton } from './revoke-invite-button'
@@ -26,43 +25,41 @@ export async function Invites() {
         </Card>
       )}
 
-      <div className="space-y-2">
-        <h2 className="text-lg font-semibold">Invites</h2>
+      <Card className="space-y-2">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold">Invites</CardTitle>
+        </CardHeader>
 
-        <div className="rounded-xl border bg-card text-card-foreground shadow">
-          <Table>
-            <TableBody>
-              {invites.map((invite) => {
-                return (
-                  <TableRow key={invite.id}>
-                    <TableCell>
-                      <span className="text-muted-foreground">
-                        {invite.email}
-                      </span>
-                    </TableCell>
-                    <TableCell className="font-medium">{invite.role}</TableCell>
-                    <TableCell>
-                      <div className="flex justify-end">
-                        {permissions?.can('delete', 'Invite') && (
-                          <RevokeInviteButton inviteId={invite.id} />
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
+        <CardContent>
+          {invites.map((invite) => {
+            return (
+              <div
+                key={invite.id}
+                className="first:pt-0 border-b last:border-none last:pb-0 py-3 flex items-center justify-between"
+              >
+                <div className="flex flex-col font-medium text-sm">
+                  <span className="">{invite.email} </span>
+                  <span className="text-muted-foreground">{invite.role}</span>
+                </div>
 
-              {invites.length === 0 && (
-                <TableRow>
-                  <TableCell className="text-center text-muted-foreground">
-                    No invites found
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+                <div className="flex justify-end">
+                  {permissions?.can('delete', 'Invite') && (
+                    <RevokeInviteButton inviteId={invite.id} />
+                  )}
+                </div>
+              </div>
+            )
+          })}
+
+          {invites.length === 0 && (
+            <div>
+              <span className="text-center text-muted-foreground">
+                No invites found
+              </span>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }

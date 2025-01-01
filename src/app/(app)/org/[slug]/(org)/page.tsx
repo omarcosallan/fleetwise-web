@@ -65,13 +65,13 @@ export default async function OrgPage({
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Brand/Manufacturer</TableHead>
+              <TableHead className="px-6">Brand/Manufacturer</TableHead>
               <TableHead style={{ width: 100 }}>Plate</TableHead>
               <TableHead style={{ width: 120 }}>Register</TableHead>
               <TableHead style={{ width: 80 }}>Status</TableHead>
               <TableHead style={{ width: 120 }}>Rented</TableHead>
               <TableHead style={{ width: 200 }}>Created at</TableHead>
-              <TableHead style={{ width: 64 }} />
+              <TableHead className="px-6" style={{ width: 64 }} />
             </TableRow>
           </TableHeader>
 
@@ -80,7 +80,7 @@ export default async function OrgPage({
               vehicles.map((vehicle) => {
                 return (
                   <TableRow key={vehicle.id}>
-                    <TableCell>
+                    <TableCell className="px-6">
                       <div className="flex flex-col">
                         <span className="font-medium text-primary outline-none">
                           {vehicle.manufacturer}/{vehicle.model}
@@ -119,7 +119,7 @@ export default async function OrgPage({
 
                       {dayjs(vehicle.createdAt).fromNow()}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="px-6">
                       {permissions?.can('update', 'Vehicle') && (
                         <UpdateVehicle initialData={vehicle} />
                       )}
