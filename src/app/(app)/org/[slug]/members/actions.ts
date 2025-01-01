@@ -10,7 +10,7 @@ import { revokeInvite } from '@/http/revoke-invite'
 import { updateMember } from '@/http/update-member'
 import { transferOrganization } from '@/http/transfer-organization'
 
-import { InviteSchema } from './create-invite-form'
+import { InviteSchema } from './schemas'
 import { HTTPError } from 'ky'
 
 export async function createInviteAction(data: InviteSchema) {
@@ -26,25 +26,26 @@ export async function createInviteAction(data: InviteSchema) {
     })
 
     revalidateTag(`${currentOrg}/invites`)
-  } catch (err) {
-    if (err instanceof HTTPError) {
-      const { title } = await err.response.json()
-      return { success: false, message: title, errors: null }
-    }
 
-    console.error(err)
+    return {
+      success: true,
+      message: 'Successfully created the invited.',
+    }
+  } catch (err) {
+    const defaultErrorMessage = 'Unexpected error, try again in a few minutes.'
+
+    const errorMessage =
+      err instanceof HTTPError
+        ? (await err.response
+            .json()
+            .then((res) => res.title)
+            .catch(() => null)) || defaultErrorMessage
+        : defaultErrorMessage
 
     return {
       success: false,
-      message: 'Unexpected error, try again in a few minutes.',
-      errors: null,
+      message: errorMessage,
     }
-  }
-
-  return {
-    success: true,
-    message: 'Successfully created the invite.',
-    errors: null,
   }
 }
 

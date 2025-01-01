@@ -1,7 +1,8 @@
 'use server'
 
 import { revalidateTag } from 'next/cache'
-import { OrganizationSchema } from './organization-form'
+
+import { OrganizationSchema } from './schemas'
 import { HTTPError } from 'ky'
 
 import { getCurrentOrg } from '@/auth/auth'
@@ -19,26 +20,26 @@ export async function createOrganizationAction(data: OrganizationSchema) {
     })
 
     revalidateTag('organizations')
-  } catch (err) {
-    if (err instanceof HTTPError) {
-      const { title } = await err.response.json()
 
-      return { success: false, message: title, errors: null }
+    return {
+      success: true,
+      message: 'Successfully saved the organization.',
     }
+  } catch (err) {
+    const defaultErrorMessage = 'Unexpected error, try again in a few minutes.'
 
-    console.error(err)
+    const errorMessage =
+      err instanceof HTTPError
+        ? (await err.response
+            .json()
+            .then((res) => res.title)
+            .catch(() => null)) || defaultErrorMessage
+        : defaultErrorMessage
 
     return {
       success: false,
-      message: 'Unexpected error, try again in a few minutes.',
-      errors: null,
+      message: errorMessage,
     }
-  }
-
-  return {
-    success: true,
-    message: 'Successfully saved the organization.',
-    errors: null,
   }
 }
 
@@ -49,7 +50,6 @@ export async function updateOrganizationAction(data: OrganizationSchema) {
     return {
       success: false,
       message: 'Current organization is not available.',
-      errors: null,
     }
   }
 
@@ -64,25 +64,25 @@ export async function updateOrganizationAction(data: OrganizationSchema) {
     })
 
     revalidateTag('organizations')
-  } catch (err) {
-    if (err instanceof HTTPError) {
-      const { title } = await err.response.json()
 
-      return { success: false, message: title, errors: null }
+    return {
+      success: true,
+      message: 'Successfully saved the organization.',
     }
+  } catch (err) {
+    const defaultErrorMessage = 'Unexpected error, try again in a few minutes.'
 
-    console.error(err)
+    const errorMessage =
+      err instanceof HTTPError
+        ? (await err.response
+            .json()
+            .then((res) => res.title)
+            .catch(() => null)) || defaultErrorMessage
+        : defaultErrorMessage
 
     return {
       success: false,
-      message: 'Unexpected error, try again in a few minutes.',
-      errors: null,
+      message: errorMessage,
     }
-  }
-
-  return {
-    success: true,
-    message: 'Successfully saved the organization.',
-    errors: null,
   }
 }

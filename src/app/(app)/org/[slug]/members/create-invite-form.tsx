@@ -11,13 +11,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { toast } from 'sonner'
-
-import { roleSchema } from '@/lib/casl'
-
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import {
   Select,
   SelectContent,
@@ -25,14 +18,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { toast } from 'sonner'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+
 import { createInviteAction } from './actions'
 
-const inviteSchema = z.object({
-  email: z.string().email({ message: 'Invalid e-mail address.' }),
-  role: roleSchema,
-})
-
-export type InviteSchema = z.infer<typeof inviteSchema>
+import { inviteSchema, InviteSchema } from './schemas'
 
 export function CreateInviteForm() {
   const form = useForm<InviteSchema>({
@@ -49,12 +42,13 @@ export function CreateInviteForm() {
   } = form
 
   async function onSubmit(data: InviteSchema) {
-    const result = await createInviteAction(data)
-
-    if (result.success) {
-      toast.success(result.message)
-    } else {
-      toast.error(result.message)
+    try {
+      const result = await createInviteAction(data)
+      const toastFn = result.success ? toast.success : toast.error
+      toastFn(result.message)
+    } catch (err) {
+      toast.error('An unexpected error occurred.')
+      console.error(err)
     }
   }
 

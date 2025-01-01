@@ -2,8 +2,8 @@
 
 import { updateProfile } from '@/http/update-profile'
 import { revalidateTag } from 'next/cache'
-import { ProfileSchema } from './profile-form'
 import { HTTPError } from 'ky'
+import { ProfileSchema } from './schemas'
 
 export async function updateProfileAction(data: ProfileSchema) {
   const { name, email } = data

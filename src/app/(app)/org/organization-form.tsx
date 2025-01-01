@@ -16,52 +16,10 @@ import { toast } from 'sonner'
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 
 import { createOrganizationAction, updateOrganizationAction } from './actions'
 
-const organizationSchema = z
-  .object({
-    name: z
-      .string()
-      .min(4, { message: 'Please, incluide at least 4 characters.' }),
-    domain: z
-      .string()
-      .nullable()
-      .refine(
-        (value) => {
-          if (value) {
-            const domainRegex = /^[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/
-
-            return domainRegex.test(value)
-          }
-
-          return true
-        },
-        {
-          message: 'Please, enter a valid domain.',
-        },
-      ),
-    shouldAttachUsersByDomain: z
-      .union([z.literal('on'), z.literal('off'), z.boolean()])
-      .transform((value) => value === true || value === 'on')
-      .default(false),
-  })
-  .refine(
-    (data) => {
-      if (data.shouldAttachUsersByDomain === true && !data.domain) {
-        return false
-      }
-
-      return true
-    },
-    {
-      message: 'Domain is required when auto-join is enabled.',
-      path: ['domain'],
-    },
-  )
-
-export type OrganizationSchema = z.infer<typeof organizationSchema>
+import { organizationSchema, OrganizationSchema } from './schemas'
 
 interface OrganizationFormProps {
   isUpdating?: boolean
@@ -91,12 +49,13 @@ export function OrganizationForm({
       ? updateOrganizationAction
       : createOrganizationAction
 
-    const result = await formAction(data)
-
-    if (result.success) {
-      toast.success(result.message)
-    } else {
-      toast.error(result.message)
+    try {
+      const result = await formAction(data)
+      const toastFn = result.success ? toast.success : toast.error
+      toastFn(result.message)
+    } catch (err) {
+      toast.error('An unexpected error occurred.')
+      console.error(err)
     }
   }
 

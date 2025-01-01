@@ -35,26 +35,26 @@ export async function createVehicleAction(data: VehicleSchema) {
     })
 
     revalidateTag(`${currentOrg}vehicles`)
-  } catch (err) {
-    if (err instanceof HTTPError) {
-      const { title } = await err.response.json()
 
-      return { success: false, message: title, errors: null }
+    return {
+      success: true,
+      message: 'Successfully saved the vehicle.',
     }
+  } catch (err) {
+    const defaultErrorMessage = 'Unexpected error, try again in a few minutes.'
 
-    console.error(err)
+    const errorMessage =
+      err instanceof HTTPError
+        ? (await err.response
+            .json()
+            .then((res) => res.title)
+            .catch(() => null)) || defaultErrorMessage
+        : defaultErrorMessage
 
     return {
       success: false,
-      message: 'Unexpected error, try again in a few minutes.',
-      errors: null,
+      message: errorMessage,
     }
-  }
-
-  return {
-    success: true,
-    message: 'Successfully saved the organization.',
-    errors: null,
   }
 }
 
@@ -75,25 +75,25 @@ export async function updateVehicleAction(data: VehicleSchema) {
     })
 
     revalidateTag(`${currentOrg}vehicles`)
-  } catch (err) {
-    if (err instanceof HTTPError) {
-      const { title } = await err.response.json()
 
-      return { success: false, message: title, errors: null }
+    return {
+      success: true,
+      message: 'Successfully saved the vehicle.',
     }
+  } catch (err) {
+    const defaultErrorMessage = 'Unexpected error, try again in a few minutes.'
 
-    console.error(err)
+    const errorMessage =
+      err instanceof HTTPError
+        ? (await err.response
+            .json()
+            .then((res) => res.title)
+            .catch(() => null)) || defaultErrorMessage
+        : defaultErrorMessage
 
     return {
       success: false,
-      message: 'Unexpected error, try again in a few minutes.',
-      errors: null,
+      message: errorMessage,
     }
-  }
-
-  return {
-    success: true,
-    message: 'Successfully saved the organization.',
-    errors: null,
   }
 }
