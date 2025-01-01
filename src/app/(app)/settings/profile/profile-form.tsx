@@ -1,5 +1,9 @@
 'use client'
 
+import Image from 'next/image'
+
+import { Avatar } from '@/components/ui/avatar'
+import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -15,24 +19,10 @@ import { toast } from 'sonner'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 
 import { updateProfileAction } from './actions'
-import { Avatar } from '@/components/ui/avatar'
-import Image from 'next/image'
-import { Label } from '@/components/ui/label'
 
-const profileSchema = z.object({
-  email: z
-    .string()
-    .email({ message: 'Please, provide a valid e-mail address.' }),
-  name: z.string().refine((value) => value.split(' ').length > 1, {
-    message: 'Please, enter your full name',
-  }),
-  avatarUrl: z.string().url().nullable().optional(),
-})
-
-export type ProfileSchema = z.infer<typeof profileSchema>
+import { profileSchema, ProfileSchema } from './schemas'
 
 interface ProfileFormProps {
   initialData: ProfileSchema
