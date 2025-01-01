@@ -37,7 +37,9 @@ export async function ProfileButton() {
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
+            <p className="text-sm font-medium leading-none truncate">
+              {user.name}
+            </p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>
