@@ -1,4 +1,4 @@
-import { VehicleForm, VehicleSchema } from './vehicle-form'
+import { VehicleSchema } from './schemas'
 
 import {
   Sheet,
@@ -11,6 +11,7 @@ import {
 import { Button } from '@/components/ui/button'
 
 import { Ellipsis } from 'lucide-react'
+import { VehicleForm } from './vehicle-form'
 
 export function UpdateVehicle({ initialData }: { initialData: VehicleSchema }) {
   return (
