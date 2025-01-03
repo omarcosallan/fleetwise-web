@@ -6,7 +6,6 @@ export const api = ky.create({
   hooks: {
     beforeRequest: [
       async (request) => {
-        // biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
         let token
 
         if (typeof window === 'undefined') {
