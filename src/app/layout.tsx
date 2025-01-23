@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={cn(inter.variable, 'antialiased dark')}>
+    <html lang="en" className={cn(inter.variable, 'antialiased')}>
       <body>{children}</body>
     </html>
   )
