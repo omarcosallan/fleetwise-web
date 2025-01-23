@@ -17,10 +17,13 @@ export async function UserProfileButton() {
   return (
     <Dropdown.Root>
       <Dropdown.Trigger asChild>
-        <Button.Root
-          className="relative h-8 w-8 rounded-full"
-          variant="neutral"
-        ></Button.Root>
+        <Button.Root className="relative h-8 w-8 rounded-full">
+          <Avatar.Root size="40">
+            {session?.user.image && (
+              <Avatar.Image src={session?.user.image as string} />
+            )}
+          </Avatar.Root>
+        </Button.Root>
       </Dropdown.Trigger>
       <Dropdown.Content className="w-56" align="end" forceMount>
         <div className="flex items-center gap-3 p-2">
