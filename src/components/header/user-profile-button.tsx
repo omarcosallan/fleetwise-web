@@ -51,7 +51,7 @@ export async function UserProfileButton() {
 
         <DropdownMenuItem>
           <Link href="/settings/profile" className="flex-1">
-            Settings
+            Configurações
           </Link>
         </DropdownMenuItem>
 
@@ -60,7 +60,7 @@ export async function UserProfileButton() {
         <form action={handleSignOut}>
           <DropdownMenuItem asChild>
             <button type="submit" className="w-full cursor-pointer">
-              Logout
+              Sair
             </button>
           </DropdownMenuItem>
         </form>

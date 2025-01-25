@@ -27,8 +27,7 @@ import { toast } from 'sonner'
 import { getNameInitials } from '@/utils/get-name-initials'
 
 import { ROLES } from '@/types/roles'
-
-import { updateUserAction } from './actions'
+import { updateUserAction } from '@/app/(private)/settings/profile/actions'
 
 const userSchema = z.object({
   id: z.string().uuid(),
