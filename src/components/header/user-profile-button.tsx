@@ -50,7 +50,7 @@ export async function UserProfileButton() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem>
-          <Link href="/settings" className="flex-1">
+          <Link href="/settings/profile" className="flex-1">
             Settings
           </Link>
         </DropdownMenuItem>

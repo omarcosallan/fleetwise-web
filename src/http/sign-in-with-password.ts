@@ -11,6 +11,10 @@ interface SignInWithPasswordResponse {
     name: string
     email: string
     avatarUrl: string
+    roles: {
+      id: string
+      name: string
+    }[]
   }
   accessToken: string
   refreshToken: string

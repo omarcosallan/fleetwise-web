@@ -4,6 +4,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { signInWithPassword } from '@/http/sign-in-with-password'
 
 import { decode, type JwtPayload } from 'jsonwebtoken'
+import { ROLES, type Role } from '@/types/roles'
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
@@ -23,12 +24,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
         const user = res.user
 
+        const roles = user.roles
+          .map((role) => role.name)
+          .filter((role): role is Role => ROLES.includes(role as Role))
+
         if (res.accessToken && res.refreshToken) {
           return {
+            roles,
             accessToken: res.accessToken,
             refreshToken: res.refreshToken,
             image: user.avatarUrl,
-            ...user,
+            id: user.id,
+            email: user.email,
+            name: user.name,
           }
         }
 
@@ -40,17 +48,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     signIn: '/auth/sign-in',
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.accessToken = user.accessToken
         token.refreshToken = user.refreshToken
+        token.id = user.id
+        token.roles = user.roles
       }
 
       if (token.accessToken) {
         const decoded = decode(token.accessToken as string) as JwtPayload
         const exp = decoded?.exp ? decoded.exp : 0
 
-        if (Date.now() >= exp * 1000) {
+        if (Date.now() >= exp * 1000 || trigger === 'update') {
           try {
             const response = await fetch(
               `${process.env.API_URL! || process.env.NEXT_PUBLIC_API_URL!}auth/refresh`,
@@ -67,6 +77,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
             token.accessToken = refreshedTokens.accessToken
             token.refreshToken = refreshedTokens.refreshToken
+
+            token.name = refreshedTokens.user.name
+            token.email = refreshedTokens.user.email
+            token.picture = refreshedTokens.user.avatarUrl
+            token.roles = refreshedTokens.user.roles
+              .map((role: { name: string }) => role.name)
+              .filter((role: string): role is Role =>
+                ROLES.includes(role as Role),
+              )
           } catch {
             return token
           }
@@ -78,6 +97,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     async session({ session, token }) {
       session.user.accessToken = token.accessToken as string
       session.user.refreshToken = token.refreshToken as string
+
+      session.user.id = token.id as string
+      session.user.roles = token.roles as Role[]
+      session.user.name = token.name
+      session.user.email = token.email as string
 
       return session
     },

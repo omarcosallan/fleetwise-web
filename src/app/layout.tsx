@@ -3,6 +3,7 @@ import './globals.css'
 import { Providers } from './providers'
 
 import { cn } from '@/lib/utils'
+import { Toaster } from '@/components/ui/sonner'
 
 const inter = FontSans({
   subsets: ['latin'],
@@ -25,6 +26,7 @@ export default function RootLayout({
           <div className="relative flex min-h-svh flex-col bg-background">
             {children}
           </div>
+          <Toaster richColors position="top-center" />
         </Providers>
       </body>
     </html>
