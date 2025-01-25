@@ -6,10 +6,9 @@ export default async function AppLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
+    <div className="border-grid flex flex-1 flex-col">
       <Header />
-
-      <div className="flex flex-1 flex-col gap-4">{children}</div>
-    </>
+      <main className="flex flex-1 flex-col">{children}</main>
+    </div>
   )
 }

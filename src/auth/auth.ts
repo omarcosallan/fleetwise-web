@@ -27,6 +27,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           return {
             accessToken: res.accessToken,
             refreshToken: res.refreshToken,
+            image: user.avatarUrl,
             ...user,
           }
         }

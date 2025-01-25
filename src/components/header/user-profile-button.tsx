@@ -1,9 +1,15 @@
+import Link from 'next/link'
 import { auth, signOut } from '@/auth/auth'
 
-import * as Avatar from '@/components/ui/avatar'
-import * as Button from '@/components/ui/button'
-import * as Dropdown from '@/components/ui/dropdown'
-import Link from 'next/link'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { getNameInitials } from '@/utils/get-name-initials'
 
 export async function UserProfileButton() {
   const session = await auth()
@@ -15,51 +21,50 @@ export async function UserProfileButton() {
   }
 
   return (
-    <Dropdown.Root>
-      <Dropdown.Trigger asChild>
-        <Button.Root className="relative h-8 w-8 rounded-full">
-          <Avatar.Root size="40">
-            {session?.user.image && (
-              <Avatar.Image src={session?.user.image as string} />
-            )}
-          </Avatar.Root>
-        </Button.Root>
-      </Dropdown.Trigger>
-      <Dropdown.Content className="w-56" align="end" forceMount>
-        <div className="flex items-center gap-3 p-2">
-          <Avatar.Root size="40">
-            {session?.user.image && (
-              <Avatar.Image src={session?.user.image as string} />
-            )}
-          </Avatar.Root>
+    <DropdownMenu>
+      <DropdownMenuTrigger className="cursor-pointer" asChild>
+        <Avatar className="h-8 w-8 ">
+          <AvatarImage src={session?.user.image as string} />
+          <AvatarFallback>
+            {getNameInitials(session?.user?.name as string)}
+          </AvatarFallback>
+        </Avatar>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-60" align="end" forceMount>
+        <div className="flex items-center gap-2 p-2">
+          <Avatar>
+            <AvatarImage src={session?.user.image as string} />
+            <AvatarFallback>
+              {getNameInitials(session?.user?.name as string)}
+            </AvatarFallback>
+          </Avatar>
 
           <div className="flex-1 truncate">
-            <div className="text-label-sm text-text-strong-950">
-              {session?.user.name}
-            </div>
-
-            <div className="mt-1 text-paragraph-xs text-text-sub-600">
+            <p className="text-sm">{session?.user.name}</p>
+            <p className="mt-1 text-xs text-muted-foreground">
               {session?.user?.email}
-            </div>
+            </p>
           </div>
         </div>
 
-        <Dropdown.Item>
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem>
           <Link href="/settings" className="flex-1">
             Settings
           </Link>
-        </Dropdown.Item>
+        </DropdownMenuItem>
 
-        <Dropdown.Separator />
+        <DropdownMenuSeparator />
 
         <form action={handleSignOut}>
-          <Dropdown.Item asChild>
-            <button type="submit" className="w-full">
+          <DropdownMenuItem asChild>
+            <button type="submit" className="w-full cursor-pointer">
               Logout
             </button>
-          </Dropdown.Item>
+          </DropdownMenuItem>
         </form>
-      </Dropdown.Content>
-    </Dropdown.Root>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

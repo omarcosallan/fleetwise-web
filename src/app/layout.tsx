@@ -1,7 +1,8 @@
 import { Inter as FontSans } from 'next/font/google'
 import './globals.css'
-import { cn } from '@/utils/cn'
 import { Providers } from './providers'
+
+import { cn } from '@/lib/utils'
 
 const inter = FontSans({
   subsets: ['latin'],
@@ -16,11 +17,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(inter.variable, 'antialiased dark')}
+      className={cn('min-h-svh antialiased dark', inter.variable)}
       suppressHydrationWarning
     >
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="relative flex min-h-svh flex-col bg-background">
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   )
