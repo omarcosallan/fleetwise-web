@@ -44,11 +44,11 @@ const userSchema = z.object({
 
 export type UserSchema = z.infer<typeof userSchema>
 
-interface UserFormProps {
+interface ProfileFormProps {
   user: User
 }
 
-export function UserForm({ user }: UserFormProps) {
+export function ProfileForm({ user }: ProfileFormProps) {
   const { update } = useSession()
   const { refresh } = useRouter()
 
@@ -180,7 +180,7 @@ export function UserForm({ user }: UserFormProps) {
 
         <Button
           type="submit"
-          className="w-36 ml-auto"
+          className="ml-auto"
           size="sm"
           disabled={form.formState.isSubmitting || !form.formState.isDirty}
         >

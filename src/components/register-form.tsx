@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
   Form,
@@ -23,6 +22,7 @@ import { toast } from 'sonner'
 import { ROLES } from '@/types/roles'
 
 import { createUserAction } from '../app/(private)/settings/users/actions'
+import { SheetClose } from './ui/sheet'
 
 const registerSchema = z.object({
   name: z.string().min(2, {
@@ -56,8 +56,6 @@ export function RegisterForm() {
     try {
       await createUserAction(data)
 
-      form.reset()
-
       toast.success('User has been created.')
     } catch {
       toast.error('Uh oh! Something went wrong.')
@@ -65,121 +63,114 @@ export function RegisterForm() {
   }
 
   return (
-    <Card>
-      <CardHeader></CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid grid-cols-2 gap-2"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col space-y-4"
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome</FormLabel>
+              <FormControl>
+                <Input placeholder="John Doe" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>E-mail</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="john@example.com"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>E-mail</FormLabel>
+              <FormControl>
+                <Input type="email" placeholder="john@example.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <FormField
-              control={form.control}
-              name="roles"
-              render={() => (
-                <FormItem className="col-span-2">
-                  <div className="mb-4">
-                    <FormLabel className="text-base">Roles</FormLabel>
-                  </div>
-                  {ROLES.map((role) => (
-                    <FormField
-                      key={role}
-                      control={form.control}
-                      name="roles"
-                      render={({ field }) => {
-                        return (
-                          <FormItem
-                            key={role}
-                            className="flex flex-row items-start space-x-3 space-y-0"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(role)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([...field.value, role])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== role,
-                                        ),
-                                      )
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="font-normal cursor-pointer">
-                              {role}
-                            </FormLabel>
-                          </FormItem>
-                        )
-                      }}
-                    />
-                  ))}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        <FormField
+          control={form.control}
+          name="roles"
+          render={() => (
+            <FormItem>
+              <FormLabel>Roles</FormLabel>
+              {ROLES.map((role) => (
+                <FormField
+                  key={role}
+                  control={form.control}
+                  name="roles"
+                  render={({ field }) => {
+                    return (
+                      <FormItem
+                        key={role}
+                        className="flex flex-row items-start space-x-3 space-y-0"
+                      >
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value?.includes(role)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, role])
+                                : field.onChange(
+                                    field.value?.filter(
+                                      (value) => value !== role,
+                                    ),
+                                  )
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel className="cursor-pointer">{role}</FormLabel>
+                      </FormItem>
+                    )
+                  }}
+                />
+              ))}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-            <Button
-              type="submit"
-              className="w-36 ml-auto col-span-2"
-              size="sm"
-              disabled={form.formState.isSubmitting}
-            >
-              {form.formState.isSubmitting ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                'Salvar alterações'
-              )}
+        <div className="ml-auto space-x-2">
+          <SheetClose asChild>
+            <Button type="button" size="sm" variant="ghost">
+              Cancelar
             </Button>
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+          </SheetClose>
+          <Button
+            type="submit"
+            size="sm"
+            disabled={form.formState.isSubmitting}
+          >
+            {form.formState.isSubmitting ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              'Salvar'
+            )}
+          </Button>
+        </div>
+      </form>
+    </Form>
   )
 }

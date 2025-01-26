@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 
-import { UserForm } from '@/components/create-user-form'
+import { ProfileForm } from '@/components/profile-form'
 import { auth } from '@/auth/auth'
 
 import { ChevronRight } from 'lucide-react'
@@ -26,7 +26,7 @@ export default async function ProfilePage() {
             <div className="text-foreground">Perfil</div>
           </div>
           <div className="space-y-2">
-            <UserForm user={session?.user} />
+            <ProfileForm user={session?.user} />
           </div>
         </div>
       </main>
