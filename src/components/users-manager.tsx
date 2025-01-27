@@ -4,9 +4,13 @@ import { Badge } from './ui/badge'
 import { getNameInitials } from '@/utils/get-name-initials'
 import { getUsers } from '@/http/get-users'
 import { UserItemActions } from './user-item-actions'
+import { ability } from '@/auth/casl'
 
 export async function UsersManager() {
   const users = await getUsers()
+
+  const permissions = await ability()
+  const { can } = permissions!
 
   return (
     <>
@@ -35,8 +39,8 @@ export async function UsersManager() {
                 <div className="space-x-2">
                   {user.roles.map((role) => {
                     return (
-                      <Badge variant="secondary" key={role.id}>
-                        {role.name
+                      <Badge variant="secondary" key={role}>
+                        {role
                           .substring(5)
                           .toLocaleLowerCase()
                           .replace(/^\w/, (c) => c.toUpperCase())}
@@ -45,7 +49,14 @@ export async function UsersManager() {
                   })}
                 </div>
 
-                <UserItemActions id={user.id} />
+                <UserItemActions
+                  id={user.id}
+                  canRemoveUser={can('delete', {
+                    __typename: 'User',
+                    id: user.id,
+                    roles: user.roles,
+                  })}
+                />
               </div>
             </div>
           )

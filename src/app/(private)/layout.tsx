@@ -1,4 +1,5 @@
 import { Header } from '@/components/header'
+import { SessionProvider } from 'next-auth/react'
 
 export default async function AppLayout({
   children,
@@ -6,9 +7,11 @@ export default async function AppLayout({
   children: React.ReactNode
 }) {
   return (
-    <div data-wrapper="" className="border-grid flex flex-1 flex-col">
-      <Header />
-      <main className="flex flex-1 flex-col">{children}</main>
-    </div>
+    <SessionProvider>
+      <div data-wrapper="" className="border-grid flex flex-1 flex-col">
+        <Header />
+        <main className="flex flex-1 flex-col">{children}</main>
+      </div>
+    </SessionProvider>
   )
 }

@@ -7,12 +7,19 @@ import { notFound } from 'next/navigation'
 import { CreateUserSheet } from '@/components/create-user-sheet'
 import { UsersManager } from '@/components/users-manager'
 
+import { ability } from '@/auth/casl'
+
 export const metadata: Metadata = {
   title: 'Users',
 }
 
 export default async function UsersPage() {
   const session = await auth()
+
+  const permissions = await ability()
+
+  const cannotGetUsers = permissions?.cannot('get', 'User')
+  const canCreateUsers = permissions?.can('create', 'User')
 
   if (!session?.user) {
     notFound()
@@ -31,10 +38,10 @@ export default async function UsersPage() {
             <h1 className="scroll-m-20 text-3xl font-bold tracking-tight">
               Usuários
             </h1>
-            <CreateUserSheet />
+            {canCreateUsers && <CreateUserSheet />}
           </div>
           <div className="pb-12 pt-8">
-            <UsersManager />
+            {!cannotGetUsers && <UsersManager />}
           </div>
         </div>
       </main>

@@ -3,8 +3,10 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 
 import { signInWithPassword } from '@/http/sign-in-with-password'
 
+import { type Role } from '@/lib/casl'
+
 import { decode, type JwtPayload } from 'jsonwebtoken'
-import { ROLES, type Role } from '@/types/roles'
+import { refreshTokens } from '@/http/refresh-token'
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
@@ -24,19 +26,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
         const user = res.user
 
-        const roles = user.roles
-          .map((role) => role.name)
-          .filter((role): role is Role => ROLES.includes(role as Role))
-
         if (res.accessToken && res.refreshToken) {
           return {
-            roles,
             accessToken: res.accessToken,
             refreshToken: res.refreshToken,
             image: user.avatarUrl,
             id: user.id,
             email: user.email,
             name: user.name,
+            roles: user.roles,
           }
         }
 
@@ -62,30 +60,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
         if (Date.now() >= exp * 1000 || trigger === 'update') {
           try {
-            const response = await fetch(
-              `${process.env.API_URL! || process.env.NEXT_PUBLIC_API_URL!}auth/refresh`,
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ token: token.refreshToken }),
-              },
-            )
+            const refreshed = await refreshTokens(token.refreshToken as string)
 
-            const refreshedTokens = await response.json()
-
-            token.accessToken = refreshedTokens.accessToken
-            token.refreshToken = refreshedTokens.refreshToken
-
-            token.name = refreshedTokens.user.name
-            token.email = refreshedTokens.user.email
-            token.picture = refreshedTokens.user.avatarUrl
-            token.roles = refreshedTokens.user.roles
-              .map((role: { name: string }) => role.name)
-              .filter((role: string): role is Role =>
-                ROLES.includes(role as Role),
-              )
+            token.accessToken = refreshed.accessToken
+            token.refreshToken = refreshed.refreshToken
+            token.name = refreshed.user.name
+            token.email = refreshed.user.email
+            token.roles = refreshed.user.roles
           } catch {
             return token
           }

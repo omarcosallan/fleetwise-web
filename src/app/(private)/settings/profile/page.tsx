@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
 
+import { ability } from '@/auth/casl'
+
 import { ProfileForm } from '@/components/profile-form'
 import { auth } from '@/auth/auth'
 
@@ -16,6 +18,9 @@ export default async function ProfilePage() {
     return
   }
 
+  const permissions = await ability()
+  const cannotUpdateUser = permissions?.cannot('update', 'User')
+
   return (
     <>
       <main className="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]">
@@ -26,7 +31,10 @@ export default async function ProfilePage() {
             <div className="text-foreground">Perfil</div>
           </div>
           <div className="space-y-2">
-            <ProfileForm user={session?.user} />
+            <ProfileForm
+              user={session?.user}
+              cannotUpdateUser={cannotUpdateUser}
+            />
           </div>
         </div>
       </main>

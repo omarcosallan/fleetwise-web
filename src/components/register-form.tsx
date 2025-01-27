@@ -18,11 +18,13 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
+import { SheetClose } from './ui/sheet'
 
-import { ROLES } from '@/types/roles'
+import { ROLES } from '@/lib/casl'
 
 import { createUserAction } from '../app/(private)/settings/users/actions'
-import { SheetClose } from './ui/sheet'
+
+import { useSession } from 'next-auth/react'
 
 const registerSchema = z.object({
   name: z.string().min(2, {
@@ -42,6 +44,9 @@ const registerSchema = z.object({
 export type RegisterSchema = z.infer<typeof registerSchema>
 
 export function RegisterForm() {
+  const { data: session } = useSession()
+  const currentUserRoles = session?.user?.roles || []
+
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -122,6 +127,11 @@ export function RegisterForm() {
                   control={form.control}
                   name="roles"
                   render={({ field }) => {
+                    const isDisabled =
+                      role === 'ROLE_MODERATOR' &&
+                      !currentUserRoles.includes('ROLE_MODERATOR') &&
+                      currentUserRoles.includes('ROLE_ADMIN')
+
                     return (
                       <FormItem
                         key={role}
@@ -130,6 +140,7 @@ export function RegisterForm() {
                         <FormControl>
                           <Checkbox
                             checked={field.value?.includes(role)}
+                            disabled={isDisabled}
                             onCheckedChange={(checked) => {
                               return checked
                                 ? field.onChange([...field.value, role])

@@ -26,7 +26,8 @@ import { toast } from 'sonner'
 
 import { getNameInitials } from '@/utils/get-name-initials'
 
-import { ROLES } from '@/types/roles'
+import { ROLES } from '@/lib/casl'
+
 import { updateUserAction } from '@/app/(private)/settings/profile/actions'
 
 const userSchema = z.object({
@@ -46,10 +47,13 @@ export type UserSchema = z.infer<typeof userSchema>
 
 interface ProfileFormProps {
   user: User
+  cannotUpdateUser: boolean | undefined
 }
 
-export function ProfileForm({ user }: ProfileFormProps) {
-  const { update } = useSession()
+export function ProfileForm({ user, cannotUpdateUser }: ProfileFormProps) {
+  const { data: session, update } = useSession()
+  const currentUserRoles = session?.user?.roles || []
+
   const { refresh } = useRouter()
 
   const form = useForm<UserSchema>({
@@ -111,7 +115,11 @@ export function ProfileForm({ user }: ProfileFormProps) {
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
-                <Input placeholder="John Doe" {...field} />
+                <Input
+                  placeholder="John Doe"
+                  {...field}
+                  disabled={cannotUpdateUser}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -125,7 +133,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
             <FormItem>
               <FormLabel>E-mail</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="john@example.com" {...field} />
+                <Input
+                  type="email"
+                  placeholder="john@example.com"
+                  {...field}
+                  disabled={cannotUpdateUser}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -146,6 +159,11 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   control={form.control}
                   name="roles"
                   render={({ field }) => {
+                    const isDisabled =
+                      role === 'ROLE_MODERATOR' &&
+                      !currentUserRoles.includes('ROLE_MODERATOR') &&
+                      currentUserRoles.includes('ROLE_ADMIN')
+
                     return (
                       <FormItem
                         key={role}
@@ -154,6 +172,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                         <FormControl>
                           <Checkbox
                             checked={field.value?.includes(role)}
+                            disabled={isDisabled || cannotUpdateUser}
                             onCheckedChange={(checked) => {
                               return checked
                                 ? field.onChange([...field.value, role])
@@ -182,7 +201,11 @@ export function ProfileForm({ user }: ProfileFormProps) {
           type="submit"
           className="ml-auto"
           size="sm"
-          disabled={form.formState.isSubmitting || !form.formState.isDirty}
+          disabled={
+            form.formState.isSubmitting ||
+            !form.formState.isDirty ||
+            cannotUpdateUser
+          }
         >
           {form.formState.isSubmitting ? (
             <Loader2 className="size-4 animate-spin" />

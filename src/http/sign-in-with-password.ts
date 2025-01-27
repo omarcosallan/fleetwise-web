@@ -1,4 +1,10 @@
+import { ROLES, type Role } from '@/lib/casl'
 import { api } from './api-client'
+
+interface RoleResponse {
+  id: string
+  name: string
+}
 
 interface SignInWithPasswordRequest {
   email: string
@@ -11,10 +17,7 @@ interface SignInWithPasswordResponse {
     name: string
     email: string
     avatarUrl: string
-    roles: {
-      id: string
-      name: string
-    }[]
+    roles: RoleResponse[]
   }
   accessToken: string
   refreshToken: string
@@ -24,16 +27,24 @@ export async function signInWithPassword({
   email,
   password,
 }: SignInWithPasswordRequest) {
-  try {
-    const result = await api.post('auth/sign-in', {
-      json: {
-        email,
-        password,
-      },
-    })
+  const result = await api.post('auth/sign-in', {
+    json: {
+      email,
+      password,
+    },
+  })
 
-    return result.json<SignInWithPasswordResponse>()
-  } catch {
-    throw new Error()
+  const response = await result.json<SignInWithPasswordResponse>()
+
+  const roles: Role[] = response.user.roles
+    .map((role) => role.name)
+    .filter((role): role is Role => ROLES.includes(role as Role))
+
+  return {
+    ...response,
+    user: {
+      ...response.user,
+      roles,
+    },
   }
 }

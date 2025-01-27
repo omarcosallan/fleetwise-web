@@ -17,7 +17,9 @@ export async function UserProfileButton() {
   async function handleSignOut() {
     'use server'
 
-    await signOut()
+    await signOut({
+      redirectTo: '/auth/sign-in',
+    })
   }
 
   return (
