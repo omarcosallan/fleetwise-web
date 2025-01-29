@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 
 import { SignInButton } from './sign-in-button'
 
-import { signInWithEmail } from './actions'
+import { signInWithEmailAction } from './actions'
 import { useState } from 'react'
 
 import { Eye, EyeOff } from 'lucide-react'
@@ -15,7 +15,7 @@ export function SignInForm() {
   const [showPassword, setShowPassword] = useState(false)
 
   return (
-    <form action={signInWithEmail} className="space-y-4">
+    <form action={signInWithEmailAction} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="email">E-mail</Label>
 

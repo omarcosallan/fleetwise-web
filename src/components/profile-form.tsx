@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
-import type { User } from 'next-auth'
 import { useSession } from 'next-auth/react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -26,27 +25,34 @@ import { toast } from 'sonner'
 
 import { getNameInitials } from '@/utils/get-name-initials'
 
-import { ROLES } from '@/lib/casl'
+import { ROLES, type RoleArray } from '@/lib/casl'
 
-import { updateUserAction } from '@/app/(private)/settings/profile/actions'
+import { updateUser } from '@/http/update-user'
+import { HTTPError } from 'ky'
 
 const userSchema = z.object({
   id: z.string().uuid(),
-  name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
+  name: z.string().min(3, {
+    message: 'O nome deve ter pelo menos 3 caracteres.',
   }),
   email: z.string().email({
-    message: 'Please enter a valid email address.',
+    message: 'Insira um endereço de e-mail válido.',
   }),
   roles: z.array(z.enum(ROLES)).refine((value) => value.length > 0, {
-    message: 'You must select at least one role.',
+    message: 'Você deve selecionar pelo menos uma função.',
   }),
 })
 
 export type UserSchema = z.infer<typeof userSchema>
 
 interface ProfileFormProps {
-  user: User
+  user: {
+    id: string
+    name: string
+    email: string
+    roles: RoleArray
+    image: string | null
+  }
   cannotUpdateUser: boolean | undefined
 }
 
@@ -66,11 +72,11 @@ export function ProfileForm({ user, cannotUpdateUser }: ProfileFormProps) {
     },
   })
 
-  async function onSubmit(data: UserSchema) {
-    const { name, email, roles } = data
+  async function handleSubmit(data: UserSchema) {
+    const { id, name, email, roles } = data
 
     try {
-      await updateUserAction(data)
+      await updateUser({ id, name, email, roles })
 
       await update({
         user: {
@@ -84,16 +90,23 @@ export function ProfileForm({ user, cannotUpdateUser }: ProfileFormProps) {
 
       form.reset(data)
 
-      toast.success('Profile has been updated.')
-    } catch {
-      toast.error('Uh oh! Something went wrong.')
+      toast.success('O perfil foi atualizado.')
+    } catch (err) {
+      let message = 'Ah, ah! Algo deu errado.'
+
+      if (err instanceof HTTPError) {
+        const { detail } = await err.response.json()
+        message = detail
+      }
+
+      toast.error(message)
     }
   }
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="space-y-8 flex flex-col"
       >
         <div className="space-y-4">

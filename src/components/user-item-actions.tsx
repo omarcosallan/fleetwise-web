@@ -26,6 +26,7 @@ import {
 import { toast } from 'sonner'
 
 import { removeUserAction } from '@/app/(private)/settings/users/actions'
+import Link from 'next/link'
 
 interface UserItemActionsProps {
   id: string
@@ -67,7 +68,11 @@ export function UserItemActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-10" forceMount>
-          <DropdownMenuItem>Editar</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href={`users/${id}`} prefetch={false} className="w-full">
+              Editar
+            </Link>
+          </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 

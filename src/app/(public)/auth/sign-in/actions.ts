@@ -8,7 +8,7 @@ const signInFormSchema = z.object({
   password: z.string().min(1),
 })
 
-export async function signInWithEmail(data: FormData) {
+export async function signInWithEmailAction(data: FormData) {
   const { email, password } = signInFormSchema.parse(Object.fromEntries(data))
 
   await signIn('credentials', {

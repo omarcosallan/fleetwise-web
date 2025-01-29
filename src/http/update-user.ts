@@ -1,11 +1,11 @@
-import type { Role } from '@/types/roles'
+import type { RoleArray } from '@/lib/casl'
 import { api } from './api-client'
 
 interface UpdateUserProps {
   id: string
   name: string
   email: string
-  roles: Role[]
+  roles: RoleArray
 }
 
 export async function updateUser({ id, name, email, roles }: UpdateUserProps) {

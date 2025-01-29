@@ -24,21 +24,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           password: password as string,
         })
 
-        const user = res.user
+        if (res) {
+          const user = res.user
 
-        if (res.accessToken && res.refreshToken) {
           return {
+            ...user,
+            image: user.avatarUrl,
             accessToken: res.accessToken,
             refreshToken: res.refreshToken,
-            image: user.avatarUrl,
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            roles: user.roles,
           }
         }
 
-        return null
+        throw new Error('Unauthorized.')
       },
     }),
   ],

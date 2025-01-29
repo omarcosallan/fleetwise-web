@@ -1,7 +1,13 @@
 import { RegisterForm } from './register-form'
 
 import { Button } from './ui/button'
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from './ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+  SheetTrigger,
+} from './ui/sheet'
 
 export function CreateUserSheet() {
   return (
@@ -11,6 +17,7 @@ export function CreateUserSheet() {
       </SheetTrigger>
       <SheetContent className="space-y-4">
         <SheetTitle>Criar usuário</SheetTitle>
+        <SheetDescription></SheetDescription>
         <RegisterForm />
       </SheetContent>
     </Sheet>

@@ -22,28 +22,31 @@ import { SheetClose } from './ui/sheet'
 
 import { ROLES } from '@/lib/casl'
 
-import { createUserAction } from '../app/(private)/settings/users/actions'
-
 import { useSession } from 'next-auth/react'
+import { HTTPError } from 'ky'
+import { createUser } from '@/http/create-user'
+import { useRouter } from 'next/navigation'
 
 const registerSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
+  name: z.string().min(3, {
+    message: 'O nome deve ter pelo menos 3 caracteres.',
   }),
   email: z.string().email({
-    message: 'Please enter a valid email address.',
+    message: 'Insira um endereço de e-mail válido.',
   }),
   password: z.string().min(8, {
-    message: 'Password must be at least 8 characters.',
+    message: 'A senha deve ter pelo menos 8 caracteres.',
   }),
   roles: z.array(z.enum(ROLES)).refine((value) => value.length > 0, {
-    message: 'You must select at least one role.',
+    message: 'Você deve selecionar pelo menos uma função.',
   }),
 })
 
 export type RegisterSchema = z.infer<typeof registerSchema>
 
 export function RegisterForm() {
+  const { refresh } = useRouter()
+
   const { data: session } = useSession()
   const currentUserRoles = session?.user?.roles || []
 
@@ -53,24 +56,37 @@ export function RegisterForm() {
       name: '',
       email: '',
       password: '',
-      roles: [],
+      roles: ['ROLE_USER'],
     },
   })
 
-  async function onSubmit(data: RegisterSchema) {
-    try {
-      await createUserAction(data)
+  async function handleSubmit(data: RegisterSchema) {
+    const { name, email, password, roles } = data
 
-      toast.success('User has been created.')
-    } catch {
-      toast.error('Uh oh! Something went wrong.')
+    try {
+      await createUser({ name, email, password, roles })
+
+      toast.success('O usuário foi criado.')
+
+      refresh()
+
+      form.reset()
+    } catch (err) {
+      let message = 'Ah, ah! Algo deu errado.'
+
+      if (err instanceof HTTPError) {
+        const { detail } = await err.response.json()
+        message = detail
+      }
+
+      toast.error(message)
     }
   }
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col space-y-4"
       >
         <FormField
