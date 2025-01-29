@@ -1,6 +1,8 @@
 import { ROLES, type Role } from '@/lib/casl'
 import { api } from './api-client'
 
+import { HTTPError } from 'ky'
+
 interface RoleResponse {
   id: string
   name: string
@@ -27,24 +29,29 @@ export async function signInWithPassword({
   email,
   password,
 }: SignInWithPasswordRequest) {
-  const result = await api.post('auth/sign-in', {
-    json: {
-      email,
-      password,
-    },
-  })
+  try {
+    const result = await api.post('auth/sign-in', {
+      json: { email, password },
+    })
 
-  const response = await result.json<SignInWithPasswordResponse>()
+    const response = await result.json<SignInWithPasswordResponse>()
 
-  const roles: Role[] = response.user.roles
-    .map((role) => role.name)
-    .filter((role): role is Role => ROLES.includes(role as Role))
+    const roles: Role[] = response.user.roles
+      .map((role) => role.name)
+      .filter((role): role is Role => ROLES.includes(role as Role))
 
-  return {
-    ...response,
-    user: {
-      ...response.user,
-      roles,
-    },
+    return {
+      ...response,
+      user: {
+        ...response.user,
+        roles,
+      },
+    }
+  } catch (error) {
+    if (error instanceof HTTPError) {
+      const body = await error.response.json()
+      throw new Error(body.detail || 'Credenciais inválidas')
+    }
+    throw new Error('Erro desconhecido ao tentar fazer login')
   }
 }

@@ -1,19 +1,41 @@
 'use server'
 
 import { signIn } from '@/auth/auth'
-import { z } from 'zod'
 
-const signInFormSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-})
+export async function signInWithEmailAction({
+  email,
+  password,
+}: {
+  email: string
+  password: string
+}) {
+  try {
+    await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
+    })
 
-export async function signInWithEmailAction(data: FormData) {
-  const { email, password } = signInFormSchema.parse(Object.fromEntries(data))
+    return {
+      success: true,
+    }
+  } catch (error) {
+    let errorMessage = 'Ocorreu um erro inesperado.'
 
-  await signIn('credentials', {
-    email,
-    password,
-    redirectTo: '/',
-  })
+    if (
+      error instanceof Error &&
+      error.cause &&
+      typeof error.cause === 'object'
+    ) {
+      const cause = error.cause as { err?: { message?: string } }
+      if (cause.err?.message) {
+        errorMessage = cause.err.message
+      }
+    }
+
+    return {
+      success: false,
+      message: errorMessage,
+    }
+  }
 }

@@ -35,7 +35,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           }
         }
 
-        throw new Error('Unauthorized.')
+        throw new Error('Não autorizado.')
       },
     }),
   ],

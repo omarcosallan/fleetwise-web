@@ -33,7 +33,7 @@ export function MainNav() {
               : 'text-foreground/80',
           )}
         >
-          Configruações
+          Configurações
         </Link>
       </nav>
     </div>
