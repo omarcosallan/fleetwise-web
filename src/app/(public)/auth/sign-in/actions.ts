@@ -1,6 +1,7 @@
 'use server'
 
 import { signIn } from '@/auth/auth'
+import { getErrorState } from '@/utils/get-error-state'
 
 export async function signInWithEmailAction({
   email,
@@ -20,22 +21,6 @@ export async function signInWithEmailAction({
       success: true,
     }
   } catch (error) {
-    let errorMessage = 'Ocorreu um erro inesperado.'
-
-    if (
-      error instanceof Error &&
-      error.cause &&
-      typeof error.cause === 'object'
-    ) {
-      const cause = error.cause as { err?: { message?: string } }
-      if (cause.err?.message) {
-        errorMessage = cause.err.message
-      }
-    }
-
-    return {
-      success: false,
-      message: errorMessage,
-    }
+    return await getErrorState(error)
   }
 }

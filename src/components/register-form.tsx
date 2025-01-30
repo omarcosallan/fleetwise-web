@@ -23,9 +23,8 @@ import { SheetClose } from './ui/sheet'
 import { ROLES } from '@/lib/casl'
 
 import { useSession } from 'next-auth/react'
-import { HTTPError } from 'ky'
-import { createUser } from '@/http/create-user'
-import { useRouter } from 'next/navigation'
+
+import { createUserAction } from '@/app/(private)/settings/users/actions'
 
 const registerSchema = z.object({
   name: z.string().min(3, {
@@ -45,8 +44,6 @@ const registerSchema = z.object({
 export type RegisterSchema = z.infer<typeof registerSchema>
 
 export function RegisterForm() {
-  const { refresh } = useRouter()
-
   const { data: session } = useSession()
   const currentUserRoles = session?.user?.roles || []
 
@@ -61,25 +58,18 @@ export function RegisterForm() {
   })
 
   async function handleSubmit(data: RegisterSchema) {
-    const { name, email, password, roles } = data
-
     try {
-      await createUser({ name, email, password, roles })
+      const result = await createUserAction(data)
 
-      toast.success('O usuário foi criado.')
+      if (result?.success) {
+        toast.success('O usuário foi criado.')
 
-      refresh()
-
-      form.reset()
-    } catch (err) {
-      let message = 'Ah, ah! Algo deu errado.'
-
-      if (err instanceof HTTPError) {
-        const { detail } = await err.response.json()
-        message = detail
+        form.reset()
+      } else {
+        toast.error(result?.message)
       }
-
-      toast.error(message)
+    } catch {
+      toast.error('Ah, ah! Algo deu errado.')
     }
   }
 

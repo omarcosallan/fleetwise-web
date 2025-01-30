@@ -1,7 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-
 import { MoreHorizontal } from 'lucide-react'
 import { useState } from 'react'
 
@@ -37,20 +35,19 @@ export function UserItemActions({
   id,
   canRemoveUser = true,
 }: UserItemActionsProps) {
-  const router = useRouter()
-
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false)
 
   async function handleRemoveUser() {
     try {
-      await removeUserAction({ id })
+      const result = await removeUserAction({ id })
 
       setIsRemoveDialogOpen(false)
 
-      router.refresh()
-    } catch (err) {
-      console.log(err)
-      toast.error('Uh oh! Something went wrong.')
+      if (!result.success) {
+        toast.error(result.message)
+      }
+    } catch {
+      toast.error('Ah, ah! Algo deu errado.')
     }
   }
 

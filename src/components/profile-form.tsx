@@ -1,6 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
@@ -27,8 +26,7 @@ import { getNameInitials } from '@/utils/get-name-initials'
 
 import { ROLES, type RoleArray } from '@/lib/casl'
 
-import { updateUser } from '@/http/update-user'
-import { HTTPError } from 'ky'
+import { updateUserAction } from '@/app/(private)/settings/profile/actions'
 
 const userSchema = z.object({
   id: z.string().uuid(),
@@ -47,11 +45,11 @@ export type UserSchema = z.infer<typeof userSchema>
 
 interface ProfileFormProps {
   user: {
-    id: string
-    name: string
-    email: string
+    id?: string
+    name?: string | null
+    email?: string | null
+    image?: string | null
     roles: RoleArray
-    image: string | null
   }
   cannotUpdateUser: boolean | undefined
 }
@@ -60,12 +58,10 @@ export function ProfileForm({ user, cannotUpdateUser }: ProfileFormProps) {
   const { data: session, update } = useSession()
   const currentUserRoles = session?.user?.roles || []
 
-  const { refresh } = useRouter()
-
   const form = useForm<UserSchema>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      id: user.id,
+      id: user.id || '',
       name: user.name || '',
       email: user.email || '',
       roles: user.roles || [],
@@ -73,10 +69,10 @@ export function ProfileForm({ user, cannotUpdateUser }: ProfileFormProps) {
   })
 
   async function handleSubmit(data: UserSchema) {
-    const { id, name, email, roles } = data
+    const { name, email, roles } = data
 
     try {
-      await updateUser({ id, name, email, roles })
+      const result = await updateUserAction(data)
 
       await update({
         user: {
@@ -86,20 +82,15 @@ export function ProfileForm({ user, cannotUpdateUser }: ProfileFormProps) {
         },
       })
 
-      refresh()
+      if (result.success) {
+        toast.success('Seu perfil foi atualizado.')
 
-      form.reset(data)
-
-      toast.success('O perfil foi atualizado.')
-    } catch (err) {
-      let message = 'Ah, ah! Algo deu errado.'
-
-      if (err instanceof HTTPError) {
-        const { detail } = await err.response.json()
-        message = detail
+        form.reset(data)
+      } else {
+        toast.error(result.message)
       }
-
-      toast.error(message)
+    } catch {
+      toast.error('Ah, ah! Algo deu errado.')
     }
   }
 
