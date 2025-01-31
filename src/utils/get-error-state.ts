@@ -6,11 +6,8 @@ export async function getErrorState(error: unknown): Promise<{
 }> {
   let message = 'Ah, ah! Algo deu errado.'
 
-  console.log(error instanceof HTTPError)
-
   if (error instanceof HTTPError) {
     const { detail } = await error.response.json()
-    console.log(detail)
     message = detail
   }
 

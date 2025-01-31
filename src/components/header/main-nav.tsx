@@ -25,6 +25,17 @@ export function MainNav() {
           Dashboard
         </Link>
         <Link
+          href="/departments"
+          className={cn(
+            'transition-colors hover:text-foreground/80',
+            pathname.includes('/departments')
+              ? 'text-foreground'
+              : 'text-foreground/80',
+          )}
+        >
+          Secretarias
+        </Link>
+        <Link
           href="/settings/profile"
           className={cn(
             'transition-colors hover:text-foreground/80',

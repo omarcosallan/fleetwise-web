@@ -1,4 +1,4 @@
-import { PageHeader, PageHeaderHeading } from '@/components/page.header'
+import { PageHeader, PageHeaderHeading } from '@/components/page-header'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 import { getDepartmentsAmountSummary } from '@/http/get-departments-amount-summary'

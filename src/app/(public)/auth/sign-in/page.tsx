@@ -3,7 +3,7 @@ import { SignInForm } from './sign-in-form'
 import {
   PageHeaderDescription,
   PageHeaderHeading,
-} from '@/components/page.header'
+} from '@/components/page-header'
 
 export const metadata: Metadata = {
   title: 'Sign In',
