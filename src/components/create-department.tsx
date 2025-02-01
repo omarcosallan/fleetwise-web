@@ -73,7 +73,7 @@ export function CreateDepartment() {
   return (
     <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">
+        <Button size="sm" className="w-full sm:w-fit">
           <Plus />
           <span>Criar secretaria</span>
         </Button>
