@@ -36,8 +36,8 @@ export default async function DepartmentsPage({
       <PageHeader>
         <PageHeaderHeading>Secretarias</PageHeaderHeading>
       </PageHeader>
-      <div className="container-wrapper">
-        <div className="container py-6">
+      <div className="container-wrapper h-full flex-1">
+        <div className="container py-6 flex-grow">
           <div className="flex flex-col items-center sm:flex-row gap-3">
             <Filters />
             {permissions?.can('create', 'Department') && <CreateDepartment />}

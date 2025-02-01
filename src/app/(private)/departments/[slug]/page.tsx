@@ -38,7 +38,7 @@ export default async function DepartmentSlugPage({
       <PageHeader>
         <PageHeaderHeading>{slug}</PageHeaderHeading>
       </PageHeader>
-      <div className="container-wrapper pt-6">
+      <div className="container-wrapper pt-6 h-full flex-1">
         <div className="container flex flex-col gap-8">
           <div>
             <h1 className="text-2xl font-bold leading-tight tracking-tighter md:text-3xl lg:leading-[1.1]">

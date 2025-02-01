@@ -10,7 +10,7 @@ export default async function AppLayout({
     <SessionProvider>
       <div data-wrapper="" className="border-grid flex flex-1 flex-col">
         <Header />
-        <main className="flex flex-1 flex-col">{children}</main>
+        <main className="flex flex-1 flex-col h-full">{children}</main>
       </div>
     </SessionProvider>
   )

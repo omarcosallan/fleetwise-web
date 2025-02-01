@@ -18,7 +18,7 @@ export default async function DashboardPage() {
       <PageHeader>
         <PageHeaderHeading>Dashboard</PageHeaderHeading>
       </PageHeader>
-      <div className="container-wrapper">
+      <div className="container-wrapper h-full flex-1">
         <div className="container py-6">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8 sm:gap-6">
             <Card>
