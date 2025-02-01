@@ -1,15 +1,12 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 
-import { Ellipsis } from 'lucide-react'
-
 import { ability } from '@/auth/casl'
 
 import { getDepartments } from '@/http/get-departments'
 import { getNameInitials } from '@/utils/get-name-initials'
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -21,6 +18,7 @@ import {
 import { CreateDepartment } from '@/components/create-department'
 
 import { z } from 'zod'
+import { DepartmentItemActions } from '@/components/department-item-actions'
 
 export const metadata: Metadata = {
   title: 'Secretarias',
@@ -74,14 +72,10 @@ export default async function DepartmentsPage({
                     </CardDescription>
                   </div>
                 </div>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  className="text-muted-foreground shrink-0 relative z-20"
-                  disabled={!canDeleteDepartment}
-                >
-                  <Ellipsis />
-                </Button>
+                <DepartmentItemActions
+                  slug={department.slug}
+                  canDeleteDepartment={canDeleteDepartment}
+                />
               </CardHeader>
               <CardContent className="flex items-center gap-3">
                 <div className="flex items-center gap-2">

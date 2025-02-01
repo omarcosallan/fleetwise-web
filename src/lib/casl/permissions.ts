@@ -10,8 +10,11 @@ type PermissionsByRole = (
 ) => void
 
 export const permissions: Record<Role, PermissionsByRole> = {
-  ROLE_MODERATOR(_, { can }) {
+  ROLE_MODERATOR(user, { can, cannot }) {
     can('manage', 'all')
+
+    cannot('delete', 'User')
+    can('delete', 'User', { id: { $ne: user.id } })
   },
   ROLE_ADMIN(user, { can, cannot }) {
     can('manage', 'all')
