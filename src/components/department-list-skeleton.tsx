@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 
-export default function DepartmentsLoading() {
+export default function DepartmentListSkeleton() {
   return (
     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8 sm:gap-6">
       {Array.from({ length: 8 }).map((_, index) => (

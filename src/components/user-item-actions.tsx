@@ -94,10 +94,8 @@ export function UserItemActions({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel asChild>
-            <Button size="sm" variant="ghost">
-              Cancelar
-            </Button>
+          <AlertDialogCancel className="h-8 text-xs p-0 px-3">
+            Cancelar
           </AlertDialogCancel>
           <Button
             disabled={!canRemoveUser}

@@ -95,14 +95,12 @@ export function DepartmentItemActions({
           <AlertDialogDescription className="space-y-3">
             Esta ação não pode ser desfeita e a secretaria{' '}
             <span className="font-semibold text-foreground">{slug}</span> será
-            excluída dessa organização, juntamente com seus veículos.
+            excluída, juntamente com seus veículos.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel asChild>
-            <Button size="sm" variant="destructive">
-              Cancelar
-            </Button>
+        <AlertDialogFooter className="items-center">
+          <AlertDialogCancel className="h-8 text-xs p-0 px-3">
+            Cancelar
           </AlertDialogCancel>
           <Button
             disabled={!canDeleteDepartment}
