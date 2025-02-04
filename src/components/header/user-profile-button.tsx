@@ -10,9 +10,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { getNameInitials } from '@/utils/get-name-initials'
+import { ability } from '@/auth/casl'
 
 export async function UserProfileButton() {
   const session = await auth()
+
+  const permissions = await ability()
 
   async function handleSignOut() {
     'use server'
@@ -56,6 +59,14 @@ export async function UserProfileButton() {
             Configurações
           </Link>
         </DropdownMenuItem>
+
+        {permissions?.can('get', 'User') && (
+          <DropdownMenuItem>
+            <Link href="/settings/users" className="flex-1">
+              Usuários
+            </Link>
+          </DropdownMenuItem>
+        )}
 
         <DropdownMenuSeparator />
 

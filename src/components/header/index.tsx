@@ -1,6 +1,7 @@
 import { UserProfileButton } from './user-profile-button'
 import { ModeSwitcher } from './mode-switcher'
 import { MainNav } from './main-nav'
+import { MobileNav } from './mobile-nav'
 
 export async function Header() {
   return (
@@ -8,7 +9,7 @@ export async function Header() {
       <div className="container-wrapper">
         <div className="container flex h-14 items-center">
           <MainNav />
-
+          <MobileNav />
           <div className="flex flex-1 items-center justify-between gap-2 md:justify-end">
             <nav className="flex items-center gap-0.5">
               <UserProfileButton />
