@@ -1,6 +1,7 @@
 'use client'
 
-import * as React from 'react'
+import { useCallback, useState, Fragment } from 'react'
+
 import Link, { LinkProps } from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -12,13 +13,15 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '../ui/drawer'
-import { docsConfig } from '@/configs/docs'
+import { getDocsConfig } from '@/configs/docs'
 import { Button } from '../ui/button'
 
 export function MobileNav() {
-  const [open, setOpen] = React.useState(false)
+  const docsConfig = getDocsConfig()
 
-  const onOpenChange = React.useCallback((open: boolean) => {
+  const [open, setOpen] = useState(false)
+
+  const onOpenChange = useCallback((open: boolean) => {
     setOpen(open)
   }, [])
 
@@ -70,7 +73,7 @@ export function MobileNav() {
                 <h4 className="font-medium">{item.title}</h4>
                 {item?.items?.length &&
                   item.items.map((item) => (
-                    <React.Fragment key={item.href}>
+                    <Fragment key={item.href}>
                       {!item.disabled &&
                         (item.href ? (
                           <MobileLink
@@ -88,7 +91,7 @@ export function MobileNav() {
                         ) : (
                           item.title
                         ))}
-                    </React.Fragment>
+                    </Fragment>
                   ))}
               </div>
             ))}

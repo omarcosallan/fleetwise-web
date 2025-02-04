@@ -51,6 +51,11 @@ export async function UsersManager() {
 
                 <UserItemActions
                   id={user.id}
+                  canUpdateUser={can('update', {
+                    __typename: 'User',
+                    id: user.id,
+                    roles: user.roles,
+                  })}
                   canRemoveUser={can('delete', {
                     __typename: 'User',
                     id: user.id,

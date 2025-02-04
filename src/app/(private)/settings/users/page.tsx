@@ -18,7 +18,6 @@ export default async function UsersPage() {
 
   const permissions = await ability()
 
-  const cannotGetUsers = permissions?.cannot('get', 'User')
   const canCreateUsers = permissions?.can('create', 'User')
 
   if (!session?.user) {
@@ -41,7 +40,7 @@ export default async function UsersPage() {
             {canCreateUsers && <CreateUserSheet />}
           </div>
           <div className="pb-12 pt-8">
-            {!cannotGetUsers && <UsersManager />}
+            <UsersManager />
           </div>
         </div>
       </main>

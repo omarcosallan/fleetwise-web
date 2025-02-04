@@ -29,11 +29,13 @@ import Link from 'next/link'
 interface UserItemActionsProps {
   id: string
   canRemoveUser?: boolean
+  canUpdateUser?: boolean
 }
 
 export function UserItemActions({
   id,
   canRemoveUser = true,
+  canUpdateUser = true,
 }: UserItemActionsProps) {
   const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false)
 
@@ -65,7 +67,7 @@ export function UserItemActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-10" forceMount>
-          <DropdownMenuItem>
+          <DropdownMenuItem disabled={!canUpdateUser}>
             <Link href={`users/${id}`} prefetch={false} className="w-full">
               Editar
             </Link>

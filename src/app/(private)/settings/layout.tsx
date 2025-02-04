@@ -1,11 +1,17 @@
+import { ability } from '@/auth/casl'
 import { DocsNav } from '@/components/docs-nav'
-import { docsConfig } from '@/configs/docs'
 
-export default function SettingsLayout({
+import { getDocsConfig } from '@/configs/docs'
+
+export default async function SettingsLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const permissions = await ability()
+
+  const docsConfig = getDocsConfig(permissions)
+
   return (
     <>
       <div className="container-wrapper">
