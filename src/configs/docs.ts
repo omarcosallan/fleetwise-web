@@ -12,6 +12,7 @@ export function getDocsConfig(ability?: AppAbility | null): DocsConfig {
     mainNav: [
       { title: 'Dashboard', href: '/' },
       { title: 'Secretarias', href: '/departments' },
+      { title: 'Veículos', href: '/vehicles' },
       { title: 'Configurações', href: '/settings/profile' },
     ],
     sidebarNav: [

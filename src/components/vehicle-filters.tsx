@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from './ui/select'
 
-export function Filters() {
+export function VehicleFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -22,9 +22,12 @@ export function Filters() {
   const [isPendingFilterTransition, startTransition] = useTransition()
 
   const [search, setSearch] = useState(searchParams.get('search') ?? '')
-  const [sortBy, setSortBy] = useState(searchParams.get('sortBy') ?? 'name')
+  const [sortBy, setSortBy] = useState(searchParams.get('sortBy') ?? 'model')
+  const [orderDirection, setOrderDirection] = useState(
+    searchParams.get('order') ?? 'asc',
+  )
 
-  function updateFilters(newSearch: string, newSort: string) {
+  function updateFilters(newSearch: string, newSort: string, newOrder: string) {
     const params = new URLSearchParams(searchParams)
 
     if (newSearch) params.set('search', newSearch)
@@ -33,6 +36,9 @@ export function Filters() {
     if (newSort) params.set('sortBy', newSort)
     else params.delete('sortBy')
 
+    if (newOrder) params.set('order', newOrder)
+    else params.delete('order')
+
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`)
     })
@@ -40,7 +46,7 @@ export function Filters() {
 
   function handleFilter(event: FormEvent) {
     event.preventDefault()
-    updateFilters(search, sortBy)
+    updateFilters(search, sortBy, orderDirection)
   }
 
   return (
@@ -59,9 +65,9 @@ export function Filters() {
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar secretarias"
+          placeholder="Buscar veículos"
           className="pl-10"
-          aria-label="Buscar secretarias"
+          aria-label="Buscar veículos"
           id="search"
         />
       </div>
@@ -69,19 +75,38 @@ export function Filters() {
         value={sortBy}
         onValueChange={(value) => {
           setSortBy(value)
-          updateFilters(search, value)
+          updateFilters(search, value, orderDirection)
+        }}
+        disabled={isPendingFilterTransition}
+      >
+        <SelectTrigger className="w-full sm:max-w-[210px]">
+          <SelectValue placeholder="Classificar por" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="model">Classificar por modelo</SelectItem>
+          <SelectItem value="licensePlate">Classificar por placa</SelectItem>
+          <SelectItem value="register">Classificar por renavam</SelectItem>
+          <SelectItem value="active">Classificar por status</SelectItem>
+          <SelectItem value="rented">Classificar por locação</SelectItem>
+          <SelectItem value="createdAt">
+            Classificar por data de criação
+          </SelectItem>
+        </SelectContent>
+      </Select>
+      <Select
+        value={orderDirection}
+        onValueChange={(value) => {
+          setOrderDirection(value)
+          updateFilters(search, sortBy, value)
         }}
         disabled={isPendingFilterTransition}
       >
         <SelectTrigger className="w-full sm:max-w-[180px]">
-          <SelectValue placeholder="Classificar por" />
+          <SelectValue placeholder="Ordenar direção" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="name">Classificar por nome</SelectItem>
-          <SelectItem value="active">Classificar por ativo</SelectItem>
-          <SelectItem value="createdAt">
-            Classificar por data de criação
-          </SelectItem>
+          <SelectItem value="asc">Ascendente</SelectItem>
+          <SelectItem value="desc">Descendente</SelectItem>
         </SelectContent>
       </Select>
     </form>

@@ -1,23 +1,23 @@
-import { ability } from '@/auth/casl'
-
-import { DepartmentFilters } from '@/components/department-filters'
+import { VehicleFilters } from '@/components/vehicle-filters'
 import { PageHeader, PageHeaderHeading } from '@/components/page-header'
-import { DepartmentList } from './department-list'
-import { CreateDepartment } from '@/components/create-department'
 
 import { Metadata } from 'next'
 
 import { z } from 'zod'
 import { Suspense } from 'react'
-import DepartmentListSkeleton from '../../../components/department-list-skeleton'
+
+import { VehicleList } from './vehicle-list'
 
 export const metadata: Metadata = {
-  title: 'Secretarias',
+  title: 'Veículos',
 }
 
 const pageSearchParams = z.object({
   sortBy: z.string().optional(),
   search: z.string().optional(),
+  order: z.string().optional(),
+  pageIndex: z.coerce.number().default(0),
+  pageSize: z.coerce.number().default(10),
 })
 
 type PageSearchParams = z.infer<typeof pageSearchParams>
@@ -27,23 +27,28 @@ export default async function DepartmentsPage({
 }: {
   searchParams: Promise<PageSearchParams>
 }) {
-  const { sortBy, search } = pageSearchParams.parse(await searchParams)
-
-  const permissions = await ability()
+  const { sortBy, search, order, pageIndex, pageSize } = pageSearchParams.parse(
+    await searchParams,
+  )
 
   return (
     <>
       <PageHeader>
-        <PageHeaderHeading>Secretarias</PageHeaderHeading>
+        <PageHeaderHeading>Veículos</PageHeaderHeading>
       </PageHeader>
       <div className="container-wrapper h-full flex-1">
         <div className="container py-6 flex-grow">
           <div className="flex flex-col items-center sm:flex-row gap-3">
-            <DepartmentFilters />
-            {permissions?.can('create', 'Department') && <CreateDepartment />}
+            <VehicleFilters />
           </div>
-          <Suspense fallback={<DepartmentListSkeleton />}>
-            <DepartmentList sortBy={sortBy} search={search} />
+          <Suspense fallback={null}>
+            <VehicleList
+              sortBy={sortBy}
+              search={search}
+              order={order}
+              pageIndex={pageIndex}
+              pageSize={pageSize}
+            />
           </Suspense>
         </div>
       </div>

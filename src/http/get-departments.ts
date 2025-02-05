@@ -29,7 +29,7 @@ export async function getDepartments({
 
   const result = await api
     .get(`departments?${urlParams.toString()}`, {
-      next: { tags: ['departments'] },
+      next: { tags: [`departments?${urlParams.toString()}`] },
     })
     .json<DepartmentResponse[]>()
 

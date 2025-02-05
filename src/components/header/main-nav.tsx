@@ -36,6 +36,17 @@ export function MainNav() {
           Secretarias
         </Link>
         <Link
+          href="/vehicles"
+          className={cn(
+            'transition-colors hover:text-foreground/80',
+            pathname.includes('/vehicles')
+              ? 'text-foreground'
+              : 'text-foreground/80',
+          )}
+        >
+          Veículos
+        </Link>
+        <Link
           href="/settings/profile"
           className={cn(
             'transition-colors hover:text-foreground/80',
