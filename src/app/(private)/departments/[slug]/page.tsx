@@ -8,6 +8,7 @@ import { getDepartment } from '@/http/get-department'
 import { getNameInitials } from '@/utils/get-name-initials'
 
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
 interface DepartmentSlugPageProps {
   params: Promise<{ slug: string }>
@@ -32,6 +33,10 @@ export default async function DepartmentSlugPage({
 
   const permissions = await ability()
   const canUpdateDepartment = permissions?.can('update', 'Department')
+
+  if (!department) {
+    notFound()
+  }
 
   return (
     <>

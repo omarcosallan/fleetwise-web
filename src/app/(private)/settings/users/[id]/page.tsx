@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-react'
 
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 interface UserPageProps {
   params: Promise<{ id: string }>
@@ -23,6 +24,10 @@ export async function generateMetadata({
 export default async function UserPage({ params }: UserPageProps) {
   const { id } = await params
   const user = await getUser({ id })
+
+  if (!user) {
+    notFound()
+  }
 
   const permissions = await ability()
   const cannotUpdateUser = permissions?.cannot('update', 'User')

@@ -9,11 +9,13 @@ interface DepartmentResponse {
 }
 
 export async function getDepartment({ slug }: { slug: string }) {
-  const result = await api
-    .get(`departments/${slug}`, {
-      next: { tags: [`department/${slug}`] },
-    })
-    .json<DepartmentResponse>()
+  try {
+    const result = await api
+      .get(`departments/${slug}`, {
+        next: { tags: [`department/${slug}`] },
+      })
+      .json<DepartmentResponse>()
 
-  return result
+    return result
+  } catch {}
 }
